@@ -13,15 +13,15 @@ When invoked, execute the following five-step decision procedure in order. Every
 Identify the requested task:
 1. **English → Tigrinya translation** (proceed to Step 2).
 2. **Tigrinya → English translation** (proceed to Step 5C).
-3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against `references/grammar-notes.md` and `references/anti-amharic.md`).
+3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against [`references/verb-skeleton.md`](file:///references/verb-skeleton.md) and [`references/anti-amharic.md`](file:///references/anti-amharic.md)).
 
 ---
 
 ## Step 2 — Resolve Open Choices
-Before writing any Tigrinya, resolve each open variable and record the choice in your internal notes:
+Open and consult [`references/decisions.md`](file:///references/decisions.md) before writing any Tigrinya. Resolve each open variable and record the choice in your internal notes:
 - **Dialect:** Default to written **Eritrean Tigrinya**. Switch to Tigray Tigrinya only if explicitly requested.
 - **Register:** Determine whether the context is **familiar singular** (*ንስኻ* m. / *ንስኺ* f.) or **polite singular** (*ንስኹም* m. / *ንስኽን* f. with plural verb agreement). Default to polite/respectful when addressing elders, strangers, or professionals.
-- **English "You" Disambiguation:** Resolve gender (masculine vs. feminine), number (singular vs. plural), and social distance. If translating a short ambiguous sentence, either clarify or provide both primary readings clearly labeled.
+- **English "You" Disambiguation:** Resolve gender (masculine vs. feminine), number (singular vs. plural), and social distance. If translating a short ambiguous sentence, either clarify or provide the primary readings clearly labeled.
 - **Domain:**
   - *Conversational / Everyday:* Consult [`references/idioms-and-expressions.md`](file:///references/idioms-and-expressions.md).
   - *Theological / Biblical / Liturgical:* Open and enforce [`references/theological-glossary.md`](file:///references/theological-glossary.md).
@@ -30,16 +30,18 @@ Before writing any Tigrinya, resolve each open variable and record the choice in
 ---
 
 ## Step 3 — Translate
-Apply the morphological and syntactic rules documented in [`references/grammar-notes.md`](file:///references/grammar-notes.md):
+Apply the morphological and syntactic rules documented in the references:
 1. **Clause Order:** Strict **Subject – Object – Verb (SOV)**. Relative clauses (prefixed with *ዝ-* or *ዘይ-*) precede head nouns.
 2. **Prepositions:** Prepositions (*ኣብ, ን, ብ, ምስ, ካብ, ናብ, ናይ*) precede the noun.
-3. **Pro-Drop:** Omit independent subject pronouns (*ኣነ, ንሱ, ንሳ*) unless the subject is contrasted or emphasized.
-4. **Definite Direct Object:** Prefix with **ን-** plus article (**ነቲ** masc., **ነታ** fem., **ነቶም** pl. m., **ነተን** pl. f.).
-5. **Main-Clause Past:** Use the **gerundive** (*ወሳኺ ግሲ*) for completed past actions (e.g. *ነቲ መግቢ በሊዐ* "I ate the food"; *መጺኡ* "he arrived"). Use the perfective stem only when the specific aspect requires it.
-6. **Clause Chaining:** Chain sequential actions with gerunds, not English-style conjunctions (*-ን* or *እሞ*).
-7. **Negation:** Main clauses take the circumfix **ኣይ-…-ን**. Subordinate clauses take the prefix **ዘይ-** and drop *-ን*.
-8. **Questions:** Mark yes/no questions with the enclitic particle **ዶ**.
-9. **Possession & Obligation:** Express "have" and "must" with **ኣሎ** plus pronominal suffixes (*ኣሎኒ*, *ክኸይድ ኣሎኒ*), never with an invented verb.
+3. **Pronouns & Affixes:** Open [`references/pronouns.md`](file:///references/pronouns.md). Omit independent subject pronouns (*ኣነ, ንሱ, ንሳ*) unless emphasized (pro-drop). Definite direct objects take prefix **ን-** fused with the article (**ነቲ** masc., **ነታ** fem., **ነቶም** pl. m., **ነተን** pl. f.).
+4. **Verb Construction:** Open [`references/verb-skeleton.md`](file:///references/verb-skeleton.md).
+   - Use the **gerundive** (*ወሳኺ ግሲ*) for completed past actions in main clauses (e.g. *ነቲ መግቢ በሊዐ* "I ate the food"; *መጺኡ* "he arrived").
+   - Chain sequential actions with gerunds, not English-style conjunctions (*-ን* or *እሞ*).
+   - Main-clause negation takes **ኣይ-…-ን**; subordinate negation takes **ዘይ-** (drop *-ን*).
+   - Yes/no questions take the particle **ዶ**.
+   - Express "have" and "must" using **ኣሎ** plus pronominal suffixes (*ኣሎኒ*, *ክኸይድ ኣሎኒ*).
+   - Do not force regular *fäläṭä* vowel patterns onto laryngeal or weak roots.
+5. **Benchmarks:** Open [`references/examples.md`](file:///references/examples.md) when handling comparable sentence structures.
 
 ---
 
@@ -47,9 +49,8 @@ Apply the morphological and syntactic rules documented in [`references/grammar-n
 Verify the draft against these mandatory filters:
 1. **Anti-Amharic Filter:** Open [`references/anti-amharic.md`](file:///references/anti-amharic.md) and reject every Amharic intrusion (e.g., ensure *ኣነ* not *እኔ*, *እዩ* not *ነው*, *መግቢ* not *ምግብ*, *ማይ* not *ውሃ*, *ገዛ* not *ቤት*, *ኣይ-…-ን* not *አል-…-ም*).
 2. **Agreement Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2.
-3. **Orthography & Punctuation:** Check against [`references/orthography-and-punctuation.md`](file:///references/orthography-and-punctuation.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
-4. **Gemination in Latin:** Ensure Latin transliteration marks doubled consonants (gemination), as defined in [`references/transliteration-table.md`](file:///references/transliteration-table.md).
-5. **Benchmark Integrity:** Review [`references/examples.md`](file:///references/examples.md) when handling comparable sentence structures.
+3. **Orthography & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
+4. **Latin Gemination:** In the Latin pronunciation line, mark gemination by doubling the consonant (e.g. *qärräbä* vs *qäräbä*).
 
 ---
 
@@ -61,7 +62,7 @@ Verify the draft against these mandatory filters:
 [Natural, grammatically verified translation]
 
 **Latin Transliteration:**
-[Accurate Latin pronunciation with gemination marked]
+[Accurate Latin pronunciation with gemination marked — see references/orthography.md]
 
 **Notes:**
 - Register: [Polite / Familiar / Formal]
@@ -77,11 +78,12 @@ Provide natural, idiomatic English. Add brief notes only where grammatical featu
 ---
 
 ## Reference Library
-- Complete Syllabary & Transliteration: [`references/transliteration-table.md`](file:///references/transliteration-table.md)
-- Verb Conjugations & Grammar Paradigms: [`references/grammar-notes.md`](file:///references/grammar-notes.md)
+- Decisions & Registers: [`references/decisions.md`](file:///references/decisions.md)
+- Pronouns & Affixes: [`references/pronouns.md`](file:///references/pronouns.md)
+- Verb System & Paradigms: [`references/verb-skeleton.md`](file:///references/verb-skeleton.md)
+- Orthography, Punctuation & Transliteration: [`references/orthography.md`](file:///references/orthography.md)
 - Anti-Amharic Rejection Filter: [`references/anti-amharic.md`](file:///references/anti-amharic.md)
-- Orthography & Punctuation: [`references/orthography-and-punctuation.md`](file:///references/orthography-and-punctuation.md)
+- Benchmark Translation Examples: [`references/examples.md`](file:///references/examples.md)
 - Theological & Patristic Glossary: [`references/theological-glossary.md`](file:///references/theological-glossary.md)
 - Idioms & Discourse Markers: [`references/idioms-and-expressions.md`](file:///references/idioms-and-expressions.md)
 - Canonical Dictionaries & Literature: [`references/bibliography-and-sources.md`](file:///references/bibliography-and-sources.md)
-- Benchmark Translation Examples: [`references/examples.md`](file:///references/examples.md)
