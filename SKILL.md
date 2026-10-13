@@ -1,68 +1,87 @@
 ---
 name: english-tigrinya-translator
-description: Precise English to Tigrinya (and reverse) translation that preserves meaning, enforces SOV grammar, correct Geʽez script, verb agreement, and natural tone. Use when translating text, messages, documents, idioms, or checking Tigrinya grammar and naturalness.
+description: Enforceable English ↔ Tigrinya translator skill. Resolves grammatical choices (gender, number, register, dialect), enforces strict SOV syntax and gerundive past, consults domain glossaries, and filters Amharic leakage.
 ---
 
-# English ↔ Tigrinya Contextual Translator
+# English ↔ Tigrinya Translator Procedure
 
-## Overview
+When invoked, execute the following five-step decision procedure in order. Every step resolves linguistic choices before generating or finalizing text.
 
-Provides context-aware, natural translations between English and Tigrinya. Prioritizes fluent, idiomatic Tigrinya over literal word-for-word rendering while strictly respecting SOV structure, verb morphology, and appropriate register.
+---
 
-## Core Principles
+## Step 1 — Detect Direction
+Identify the requested task:
+1. **English → Tigrinya translation** (proceed to Step 2).
+2. **Tigrinya → English translation** (proceed to Step 5C).
+3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against `references/grammar-notes.md` and `references/anti-amharic.md`).
 
-- Produce natural, fluent Tigrinya — never English word-order calques.
-- Enforce **SOV (Subject–Object–Verb)** word order.
-- Match verb conjugations and object pronouns to subject person, number, and gender.
-- Prefer culturally authentic equivalents for idioms and fixed expressions.
-- Default to polite/respectful register unless casual tone is clearly requested.
-- Keep Geʽez orthography standard and consistent.
+---
 
-## Translation Workflow
+## Step 2 — Resolve Open Choices
+Before writing any Tigrinya, resolve each open variable and record the choice in your internal notes:
+- **Dialect:** Default to written **Eritrean Tigrinya**. Switch to Tigray Tigrinya only if explicitly requested.
+- **Register:** Determine whether the context is **familiar singular** (*ንስኻ* m. / *ንስኺ* f.) or **polite singular** (*ንስኹም* m. / *ንስኽን* f. with plural verb agreement). Default to polite/respectful when addressing elders, strangers, or professionals.
+- **English "You" Disambiguation:** Resolve gender (masculine vs. feminine), number (singular vs. plural), and social distance. If translating a short ambiguous sentence, either clarify or provide both primary readings clearly labeled.
+- **Domain:**
+  - *Conversational / Everyday:* Consult [`references/idioms-and-expressions.md`](file:///references/idioms-and-expressions.md).
+  - *Theological / Biblical / Liturgical:* Open and enforce [`references/theological-glossary.md`](file:///references/theological-glossary.md).
+  - *Formal / Administrative:* Use standard civic terminology.
 
-1. **Analyze**
-   - Register: Formal / Polite / Casual / Intimate
-   - Domain: everyday conversation, religious, technical, emotional, legal, etc.
-   - Identify idioms, culture-specific concepts, or ambiguous phrases that need non-literal treatment.
+---
 
-2. **Translate**
-   - Output correct Geʽez script.
-   - Maintain strict SOV order.
-   - Apply accurate verb morphology and possessive/object suffixes.
-   - Use natural collocations and common Tigrinya phrasing.
+## Step 3 — Translate
+Apply the morphological and syntactic rules documented in [`references/grammar-notes.md`](file:///references/grammar-notes.md):
+1. **Clause Order:** Strict **Subject – Object – Verb (SOV)**. Relative clauses (prefixed with *ዝ-* or *ዘይ-*) precede head nouns.
+2. **Prepositions:** Prepositions (*ኣብ, ን, ብ, ምስ, ካብ, ናብ, ናይ*) precede the noun.
+3. **Pro-Drop:** Omit independent subject pronouns (*ኣነ, ንሱ, ንሳ*) unless the subject is contrasted or emphasized.
+4. **Definite Direct Object:** Prefix with **ን-** plus article (**ነቲ** masc., **ነታ** fem., **ነቶም** pl. m., **ነተን** pl. f.).
+5. **Main-Clause Past:** Use the **gerundive** (*ወሳኺ ግሲ*) for completed past actions (e.g. *ነቲ መግቢ በሊዐ* "I ate the food"; *መጺኡ* "he arrived"). Use the perfective stem only when the specific aspect requires it.
+6. **Clause Chaining:** Chain sequential actions with gerunds, not English-style conjunctions (*-ን* or *እሞ*).
+7. **Negation:** Main clauses take the circumfix **ኣይ-…-ን**. Subordinate clauses take the prefix **ዘይ-** and drop *-ን*.
+8. **Questions:** Mark yes/no questions with the enclitic particle **ዶ**.
+9. **Possession & Obligation:** Express "have" and "must" with **ኣሎ** plus pronominal suffixes (*ኣሎኒ*, *ክኸይድ ኣሎኒ*), never with an invented verb.
 
-3. **Verify (internal checklist)**
-   - SOV order is correct.
-   - Verb agrees with the subject in person, number, and gender.
-   - Tone matches the requested or implied register.
-   - No leakage of English syntax.
-   - The result would sound natural to a native speaker.
+---
 
-## Output Format
+## Step 4 — Check Before Answering (Pre-flight Audit)
+Verify the draft against these mandatory filters:
+1. **Anti-Amharic Filter:** Open [`references/anti-amharic.md`](file:///references/anti-amharic.md) and reject every Amharic intrusion (e.g., ensure *ኣነ* not *እኔ*, *እዩ* not *ነው*, *መግቢ* not *ምግብ*, *ማይ* not *ውሃ*, *ገዛ* not *ቤት*, *ኣይ-…-ን* not *አል-…-ም*).
+2. **Agreement Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2.
+3. **Orthography & Punctuation:** Check against [`references/orthography-and-punctuation.md`](file:///references/orthography-and-punctuation.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
+4. **Gemination in Latin:** Ensure Latin transliteration marks doubled consonants (gemination), as defined in [`references/transliteration-table.md`](file:///references/transliteration-table.md).
+5. **Benchmark Integrity:** Review [`references/examples.md`](file:///references/examples.md) when handling comparable sentence structures.
 
-Always structure the response as follows:
+---
 
-**Tigrinya (Geʽez):**
-[natural, grammatically correct translation]
+## Step 5 — Shape the Answer
 
-**Latin transliteration:**
-[clear, consistent Latin-script pronunciation guide — omit only if the user explicitly does not want it]
+### A. For Single Sentences or Short Messages:
+```markdown
+**ትግርኛ (Geʽez):**
+[Natural, grammatically verified translation]
+
+**Latin Transliteration:**
+[Accurate Latin pronunciation with gemination marked]
 
 **Notes:**
-- Tone: [Formal / Polite / Casual / etc.]
-- Key choices: [brief explanation of non-literal renderings, agreement decisions, or residual ambiguities]
-- Alternatives (optional): [1–2 other natural options when useful]
+- Register: [Polite / Familiar / Formal]
+- Key Choices: [Brief justification of agreement, vocabulary, or idiom decisions]
+```
 
-## Special Cases
+### B. For Paragraphs or Extended Documents:
+Provide the full Tigrinya text directly. Include Latin transliteration only if the user explicitly requested it. Restrict notes to choices that affect meaning or register.
 
-- **Idioms & proverbs**: Prefer authentic Tigrinya equivalents rather than literal translation.
-- **Proper names**: Retain as commonly used in Tigrinya contexts, or keep original form when appropriate.
-- **Ambiguity**: When the English source is ambiguous, note the possible readings and select the most probable one (or ask the user for clarification).
-- **Tigrinya → English**: Provide natural, idiomatic English plus short notes on any cultural or grammatical points that do not map cleanly.
-- **Religious / biblical language**: Handle with care and appropriate formality; prefer established ecclesiastical phrasing when relevant.
+### C. For Tigrinya → English Translations:
+Provide natural, idiomatic English. Add brief notes only where grammatical features (such as gerundive chaining, gender distinction, or cultural idioms) cannot be mapped cleanly into English.
 
-## Consistency Notes
+---
 
-- Prefer standard Tigrinya (as used in Eritrea and northern Ethiopia) unless a specific dialect is requested.
-- When multiple natural renderings exist, choose the most widely understood form and note alternatives if helpful.
-- For longer documents, maintain consistent terminology and register throughout.
+## Reference Library
+- Complete Syllabary & Transliteration: [`references/transliteration-table.md`](file:///references/transliteration-table.md)
+- Verb Conjugations & Grammar Paradigms: [`references/grammar-notes.md`](file:///references/grammar-notes.md)
+- Anti-Amharic Rejection Filter: [`references/anti-amharic.md`](file:///references/anti-amharic.md)
+- Orthography & Punctuation: [`references/orthography-and-punctuation.md`](file:///references/orthography-and-punctuation.md)
+- Theological & Patristic Glossary: [`references/theological-glossary.md`](file:///references/theological-glossary.md)
+- Idioms & Discourse Markers: [`references/idioms-and-expressions.md`](file:///references/idioms-and-expressions.md)
+- Canonical Dictionaries & Literature: [`references/bibliography-and-sources.md`](file:///references/bibliography-and-sources.md)
+- Benchmark Translation Examples: [`references/examples.md`](file:///references/examples.md)
