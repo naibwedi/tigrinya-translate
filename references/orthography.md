@@ -16,6 +16,30 @@ Always prioritize Geʽez punctuation in standard Tigrinya text:
 | **፦** | ነጥቢ መብርሂ (*Netbi Mibrihi*) | Colon (`:`). Introduces quotations, dialogue, or lists. |
 | **፧** | ሕቶ ነጥቢ (*Hito Netbi*) | Question mark (`?`). (Latin `?` is also common in casual text). |
 
+For translated prose produced under this skill, use **፧** rather than the Latin question mark.
+
+## Controlled House Spellings
+
+Use these forms consistently in every translation produced under this skill. They reflect the selected ecclesiastical house style while retaining written Eritrean Tigrinya grammar.
+
+| Use | Avoid as a house-style variant |
+| :--- | :--- |
+| **ሕይወት** | ህይወት |
+| **መሥዋዕት** | መስዋእት, መስዋእቲ, ምስዋእት |
+| **ነቢያት** | ነብያት |
+| **ቤተ ክርስቲያን** | ቤተ ክርስትያን |
+| **ሠለስተ** | ሰለስተ |
+| **ሥልጣን** | ስልጣን |
+| **ምሥጢር** | ምስጢር |
+| **መሠረት** | መሰረት |
+| **ሥምረት** | ስምረት |
+| **ድኅነት** | ድሕነት |
+| **ኃጢኣት** | ሓጢኣት |
+| **ጊዜ** | ግዜ |
+| **ኰከብ** | ኮከብ, ኮኾብ |
+
+These are orthographic preferences, not permission to alter meaning. Do not mechanically change **መጹ** to **መጽኡ**. Review inflected forms and compounds in context before changing them.
+
 ---
 
 ## 2. Fidel Selection & Look-Alike Consistency

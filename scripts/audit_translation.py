@@ -7,6 +7,7 @@ Validates Tigrinya text against morphological, orthographic, and anti-leakage ru
 3. Sacred name orthography (ensures Jesus is spelled strictly as ኢየሱስ)
 4. Pro-drop & accusative checks (flags redundant 'ኣነ' and checks 'ነቲ/ነታ')
 5. Self-test mode verifying benchmarks from references/examples.md
+6. Controlled ecclesiastical house-style spellings
 """
 
 import sys
@@ -63,6 +64,14 @@ AMHARIC_PATTERNS = [
     (re.compile(r"\bቤት(?!\s*ትምህርቲ|\s*ክርስቲያን|\s*መጻሕፍቲ|\s*ፍርዲ)\b"), "Standalone Amharic 'ቤት'; use Tigrinya 'ገዛ' for home/house"),
     (re.compile(r"\bአገር\b"), "Amharic 'አገር'; use Tigrinya 'ሃገር'"),
 ]
+
+DEPRECATED_HOUSE_STYLE = {
+    "ህይወት": "ሕይወት", "ምስዋእት": "መሥዋዕት", "መስዋእት": "መሥዋዕት",
+    "ነብያት": "ነቢያት", "ቤተ ክርስትያን": "ቤተ ክርስቲያን", "ሰለስተ": "ሠለስተ",
+    "ስልጣን": "ሥልጣን", "ምስጢር": "ምሥጢር", "መሰረት": "መሠረት",
+    "ስምረት": "ሥምረት", "ድሕነት": "ድኅነት", "ሓጢኣት": "ኃጢኣት",
+    "ግዜ": "ጊዜ", "ኮከብ": "ኰከብ", "ኮኾብ": "ኰከብ",
+}
 
 
 def clean_tokens(text: str) -> List[str]:
@@ -127,7 +136,24 @@ def audit_tigrinya(text: str, strict: bool = True) -> Dict[str, Any]:
         else:
             warnings.append({"type": "PUNCTUATION", "matched": ",", "message": msg})
 
-    # 5. Check pro-drop heuristic
+    latin_questions = re.findall(r"[\u1200-\u137F]+\s*\?", text)
+    if latin_questions:
+        msg = "Found Latin question mark '?' after Geʽez text. Use '፧' (ሕቶ ነጥቢ)."
+        if strict:
+            issues.append({"type": "PUNCTUATION_ERROR", "matched": "?", "message": msg})
+        else:
+            warnings.append({"type": "PUNCTUATION", "matched": "?", "message": msg})
+
+    # 5. Enforce the selected controlled ecclesiastical spelling policy.
+    for deprecated, canonical in DEPRECATED_HOUSE_STYLE.items():
+        if deprecated in text:
+            issues.append({
+                "type": "HOUSE_STYLE",
+                "matched": deprecated,
+                "message": f"Deprecated house-style form '{deprecated}'. Use '{canonical}'."
+            })
+
+    # 6. Check pro-drop heuristic
     if re.search(r"\bኣነ\b.*[ኩዐ]\b", text) and "contrasted" not in text.lower():
         warnings.append({
             "type": "PRO_DROP_NOTE",
@@ -157,6 +183,9 @@ def run_test_suite() -> bool:
         ("ይህ ሰውዬ አስተማሪ ነው።", False, "Amharic contamination: 'ነው' copula + 'ይህ'"),
         ("ትማሊ መጽሓፍ ኣንቢበ.", False, "Punctuation failure: Latin period '.' instead of '።'"),
         ("የሱስ ናብ ገዛ መጺኡ።", False, "Sacred orthography failure: 'የሱስ' instead of 'ኢየሱስ'"),
+        ("እቲ ምስጢር ኣብ ህይወት ይግለጽ።", False, "House-style failure: mystery and life spellings"),
+        ("ስለምንታይ ኰከብ ተጠቒሙ?", False, "Punctuation failure: Latin question mark after Geʽez text"),
+        ("እቲ ምሥጢር ኣብ ሕይወት ይግለጽ።", True, "Controlled ecclesiastical house-style benchmark"),
         ("ኣብ ክልተ ትኸፍሎ፧ ነቲ ተዋህዶ ተፍርሶ ኣለኻ፧", True, "Theological dialogue benchmark from Google AI Studio"),
     ]
 

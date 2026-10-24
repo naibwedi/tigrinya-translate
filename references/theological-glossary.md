@@ -108,3 +108,6 @@ The core theological curriculum taught in traditional Tewahedo church education:
    - Translate *Dispensation* as **ምድሓናዊ ሥጋዌ** or **መደብ ምድሓን** based on context.
    - Translate *Hypostatic Union* as **ተዋህዶ**.
    - Translate *Ascetic Discipline* as **ተጋድሎ** (*tägadlo*), keeping it distinguished from general monasticism unless specified.
+4. **God the Word:** Use **እግዚአብሔር ቃል** when the source denotes the pre-existent or incarnate Logos. Retain **ቃል ኣምላኽ** when it means Scripture, a divine message, or God's spoken command.
+5. **Incarnational Language:** Use **ብሥጋ ሰብ** only when the source means assuming or appearing in human flesh. Do not use it for an ordinary visible form or metaphor.
+6. **Divine Intention:** Use **ኣብ ሓሳብ ኣምላኽ** for God's intention or eternal purpose; do not mechanically replace every occurrence of heart imagery.
