@@ -111,3 +111,9 @@ The core theological curriculum taught in traditional Tewahedo church education:
 4. **God the Word:** Use **እግዚአብሔር ቃል** when the source denotes the pre-existent or incarnate Logos. Retain **ቃል ኣምላኽ** when it means Scripture, a divine message, or God's spoken command.
 5. **Incarnational Language:** Use **ብሥጋ ሰብ** only when the source means assuming or appearing in human flesh. Do not use it for an ordinary visible form or metaphor.
 6. **Divine Intention:** Use **ኣብ ሓሳብ ኣምላኽ** for God's intention or eternal purpose; do not mechanically replace every occurrence of heart imagery.
+
+## 8. Database-backed Scripture quotations
+
+When a project requests exact Scripture quotations from its verified Tigrinya Bible edition, use the supplied database text verbatim for complete, explicitly cited verses or passages. Preserve that edition's spelling, names and punctuation inside the quotation; the commentary house style applies outside it.
+
+Preserve short snippets, isolated words and paraphrases without database substitution or expansion. Double quotation marks are a useful signal, not sufficient evidence of a full verse. Verify the citation, source scope and quotation boundary together; a short complete verse may still qualify. Hold abbreviated, combined, uncertain or edition-sensitive quotations for source comparison. Never guess missing verse boundaries or reconstruct Bible text from memory. Without verified supplied Bible text, translate the source faithfully and flag it for later lookup.

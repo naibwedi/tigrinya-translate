@@ -50,7 +50,7 @@ Verify the draft against these mandatory filters:
 1. **Anti-Amharic Filter:** Open [`references/anti-amharic.md`](file:///references/anti-amharic.md) and reject every Amharic intrusion (e.g., ensure *ኣነ* not *እኔ*, *እዩ* not *ነው*, *መግቢ* not *ምግብ*, *ማይ* not *ውሃ*, *ገዛ* not *ቤት*, *ኣይ-…-ን* not *አል-…-ም*).
 2. **Agreement Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2.
 3. **Orthography & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
-   - Enforce the controlled house spellings in the reference, including **ሕይወት**, **መሥዋዕት**, **ነቢያት**, **ቤተ ክርስቲያን**, **ሠለስተ**, **ሥልጣን**, **ምሥጢር**, **መሠረት**, **ሥምረት**, **ድኅነት**, **ኃጢኣት**, **ጊዜ**, and **ኰከብ**.
+   - Outside supplied verbatim Scripture quotations, enforce the controlled house spellings in the reference, including **ሕይወት**, **መሥዋዕት**, **ነቢያት**, **ቤተ ክርስቲያን**, **ሠለስተ**, **ሥልጣን**, **ምሥጢር**, **መሠረት**, **ሥምረት**, **ድኅነት**, **ኃጢኣት**, **ጊዜ**, and **ኰከብ**.
    - Use **፧** for questions. Retain standard Eritrean **መጹ**; do not replace it mechanically with **መጽኡ**.
 4. **Latin Gemination:** In the Latin pronunciation line, mark gemination by doubling the consonant (e.g. *qärräbä* vs *qäräbä*).
 
