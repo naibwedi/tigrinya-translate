@@ -1,6 +1,6 @@
 ---
 name: english-tigrinya-translator
-description: Enforceable English ↔ Tigrinya translator skill. Resolves grammatical choices (gender, number, register, dialect), enforces strict SOV syntax and gerundive past, consults domain glossaries, and filters Amharic leakage.
+description: Enforceable English ↔ Tigrinya translator skill. Resolves grammatical choices (gender, number, register, dialect), enforces strict SOV syntax and gerundive past, consults domain glossaries, filters Amharic and Latin residue leakage, validates double -ንን negative verb morphology, and aligns database Scripture quotations.
 ---
 
 # English ↔ Tigrinya Translator Procedure
@@ -13,7 +13,7 @@ When invoked, execute the following five-step decision procedure in order. Every
 Identify the requested task:
 1. **English → Tigrinya translation** (proceed to Step 2).
 2. **Tigrinya → English translation** (proceed to Step 5C).
-3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against [`references/verb-skeleton.md`](file:///references/verb-skeleton.md) and [`references/anti-amharic.md`](file:///references/anti-amharic.md)).
+3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against [`references/verb-skeleton.md`](file:///references/verb-skeleton.md), [`references/anti-amharic.md`](file:///references/anti-amharic.md), and [`scripts/audit_translation.py`](file:///scripts/audit_translation.py)).
 
 ---
 
@@ -38,6 +38,7 @@ Apply the morphological and syntactic rules documented in the references:
    - Use the **gerundive** (*ወሳኺ ግሲ*) for completed past actions in main clauses (e.g. *ነቲ መግቢ በሊዐ* "I ate the food"; *መጺኡ* "he arrived").
    - Chain sequential actions with gerunds, not English-style conjunctions (*-ን* or *እሞ*).
    - Main-clause negation takes **ኣይ-…-ን**; subordinate negation takes **ዘይ-** (drop *-ን*).
+   - Never blend **ደው ኣይብልን** ("does not stop") and **ኣይውሰንን** ("is not limited/bounded") into `*ኣይድወንን`.
    - Yes/no questions take the particle **ዶ**.
    - Express "have" and "must" using **ኣሎ** plus pronominal suffixes (*ኣሎኒ*, *ክኸይድ ኣሎኒ*).
    - Do not force regular *fäläṭä* vowel patterns onto laryngeal or weak roots.
@@ -46,13 +47,14 @@ Apply the morphological and syntactic rules documented in the references:
 ---
 
 ## Step 4 — Check Before Answering (Pre-flight Audit)
-Verify the draft against these mandatory filters:
+Verify the draft against these mandatory filters (and run `python scripts/audit_translation.py` when auditing files):
 1. **Anti-Amharic Filter:** Open [`references/anti-amharic.md`](file:///references/anti-amharic.md) and reject every Amharic intrusion (e.g., ensure *ኣነ* not *እኔ*, *እዩ* not *ነው*, *መግቢ* not *ምግብ*, *ማይ* not *ውሃ*, *ገዛ* not *ቤት*, *ኣይ-…-ን* not *አል-…-ም*).
-2. **Agreement Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2.
-3. **Orthography & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
+2. **Agreement & Negative Morphology Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2, and verify that any `-ንን` ending on a negated verb belongs to a root-final `-ን` stem or an object suffix (`-ኒ`/`-አን`), never a morphological blend like `*ኣይድወንን`.
+3. **Zero Latin Residue & Parenthetical Echoes:** Ensure no raw English/Latin words, parenthetical echoes (`ቅዱስ ጀሮም (St. Jerome)`, `ኦሪገን (Origen)`, `ግኖስቲካውያን (Gnostics)`), or English biblical citations (`(Matt 6:1)`, `(1 Tim 1:9)`) remain in Tigrinya prose. Localize all Scripture citations with canonical Tigrinya book names and Ethiopic `፡` (`(ማቴዎስ 6፡1)`, `(1 ጢሞቴዎስ 1፡9)`), and transliterate Greek/Latin/Aramaic etymologies into Ethiopic script.
+4. **Orthography & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
    - Outside supplied verbatim Scripture quotations, enforce the controlled house spellings in the reference, including **ሕይወት**, **መሥዋዕት**, **ነቢያት**, **ቤተ ክርስቲያን**, **ሠለስተ**, **ሥልጣን**, **ምሥጢር**, **መሠረት**, **ሥምረት**, **ድኅነት**, **ኃጢኣት**, **ጊዜ**, and **ኰከብ**.
    - Use **፧** for questions. Retain standard Eritrean **መጹ**; do not replace it mechanically with **መጽኡ**.
-4. **Latin Gemination:** In the Latin pronunciation line, mark gemination by doubling the consonant (e.g. *qärräbä* vs *qäräbä*).
+5. **Latin Gemination:** In the Latin pronunciation line, mark gemination by doubling the consonant (e.g. *qärräbä* vs *qäräbä*).
 
 ---
 
@@ -78,6 +80,9 @@ Provide the full Tigrinya text directly. Include Latin transliteration only if t
 Provide natural, idiomatic English. Add brief notes only where grammatical features (such as gerundive chaining, gender distinction, or cultural idioms) cannot be mapped cleanly into English.
 
 ---
+
+## Continuous Maintenance & Repository Sync
+Whenever new Tigrinya orthographic rules, patristic terms, morphological patterns, or audit checks are discovered in *Tigrinya Catena* (`c:\Users\naibm\Documents\projects\tigrinya-catena`) or other Tigrinya projects, always update the canonical skill repository at `C:\Users\naibm\Documents\projects\english-tigrinya-translator` and keep the workspace skill copy synchronized.
 
 ## Reference Library
 - Decisions & Registers: [`references/decisions.md`](file:///references/decisions.md)

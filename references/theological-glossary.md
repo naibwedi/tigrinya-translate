@@ -117,3 +117,57 @@ The core theological curriculum taught in traditional Tewahedo church education:
 When a project requests exact Scripture quotations from its verified Tigrinya Bible edition, use the supplied database text verbatim for complete, explicitly cited verses or passages. Preserve that edition's spelling, names and punctuation inside the quotation; the commentary house style applies outside it.
 
 Preserve short snippets, isolated words and paraphrases without database substitution or expansion. Double quotation marks are a useful signal, not sufficient evidence of a full verse. Verify the citation, source scope and quotation boundary together; a short complete verse may still qualify. Hold abbreviated, combined, uncertain or edition-sensitive quotations for source comparison. Never guess missing verse boundaries or reconstruct Bible text from memory. Without verified supplied Bible text, translate the source faithfully and flag it for later lookup.
+
+
+---
+
+## 9. Canonical Biblical Citations, Patristic Names & Commentary Hygiene
+
+Learned and verified across the 28-chapter *Tigrinya Catena* (St. Matthew Patristic Commentary) editorial audit:
+
+### A. Localize All Parenthetical Biblical Citations
+Never leave English or Latin book names/abbreviations (`Matt`, `Luke`, `Rom`, `1 Tim`, `Deut.`, `Song`, `II Chronicles`, `Eccles`, `Acts`, `Gen.`, `Isa.`, `Amos`, `Joel`) inside Tigrinya prose. Always use canonical Tigrinya book titles with the Ethiopic colon **`፡`** (`\u1361`) between chapter and verse:
+- `(Matt 6:1)` → **(ማቴዎስ 6፡1)**
+- `(Luke 4:22)` → **(ሉቃስ 4፡22)**
+- `(Acts 1:18)` → **(ግብሪ ሃዋርያት 1፡18)**
+- `(Rom 12:1)` → **(ሮሜ 12፡1)**
+- `(Gal 2:20)` → **(ገላትያ 2፡20)**
+- `(1 Tim 1:9)` → **(1 ጢሞቴዎስ 1፡9)**
+- `(Gen. 3:18)` → **(ዘፍጥረት 3፡18)**
+- `(Deut. 32:24)` → **(ዘዳግም 32፡24)**
+- `(II Chronicles 24:21)` → **(2 ዜና መዋዕል 24፡21)**
+- `(Eccles 3:7)` → **(መክብብ 3፡7)**
+- `(Song 2:13)` → **(መኃልየ መኃልይ 2፡13)**
+- `(Isa. 53:6)` → **(ኢሳይያስ 53፡6)**
+- `(Jer. 7:11)` → **(ኤርምያስ 7፡11)**
+- `(Lamentations 3:53)` → **(ሰቆቃወ ኤርምያስ 3፡53)**
+- `(Joel 2:15)` → **(ዮኤል 2፡15)**
+- `(Amos 8:9)` → **(ኣሞጽ 8፡9)**
+
+### B. Zero Redundant English Parenthetical Echoes
+Once a Church Father, historical sect, or theological term is rendered in Tigrinya, **never** append the English source word in parentheses:
+- Write **ቅዱስ ጀሮም**, never `ቅዱስ ጀሮም (St. Jerome)`
+- Write **ቅዱስ ሂላሪ**, never `ቅዱስ ሂላሪ (St. Hilary)`
+- Write **ኦሪገን**, never `ኦሪገን (Origen)` or `ኦሪገን (Oreganus)`
+- Write **ተርቱልያን**, never `ተርቱልያን (Tertullian)`
+- Write **ኣባ ቴዎናስ**, never `ኣባ ቴዎናስ (Abba Theonas)`
+- Write **ግኖስቲካውያን**, never `ግኖስቲካውያን (Gnostics)`
+- Write **ኤሴናውያን**, never `ኤሴናውያን (Essenes)`
+- Write **ሰዱቃውያን**, never `ሰዱቃውያን (Sadducees)`
+- Write **ቅዱስ ስምዖን ሰፋዪ ሳእኒ**, never `Simon the tamer` / `Simon the tanner`
+
+### C. Transliterate Classical Greek, Latin & Aramaic Etymologies into Ethiopic
+When patristic commentary discusses Greek, Latin, or Aramaic terms in prose, transliterate or translate them into Geʽez script so no raw Latin characters remain in the Tigrinya paragraph:
+- *epiousios* (`epi` + `ousia` / `iousios`) → **ኤፒኡስዮስ** (**ኤፒ** + **ኡስያ** / **ኢኡስዮስ**)
+- *Lex Talionis* → **ሕጊ ምፍዳይ ሕነ**
+- *Corban* → **ቁርባን**
+- *phylacteries* → **ክታባት (ፊላክተሪ)**
+- *tu es Petrus, et super hanc petram aedificabo ecclesiam meam* → **«ቱ ኤስ ጴጥሩስ፣ ኤት ሱፐር ሃንክ ፔትራም ኤዲፊካቦ ኤክለስያም ሜኣም»** (followed by the Tigrinya meaning)
+- *Eli, Eli, lema sabachthani* → **«ኤሊ፣ ኤሊ፣ ለማ ሳባክታኒ»**
+
+### D. Source-Scan OCR Corruption Guards
+When translating from scanned English/Arabic patristic editions (such as Fr. Tadros Yacoub Malaty), inspect and repair OCR corruptions using the biblical citation context rather than copying corrupted tokens into parentheticals:
+- `(Eltiloria)` next to Bathsheba (Matt 1:6) → **ሰበይቲ ኦርዮ** ("wife of Uriah")
+- `እቲ (human s) ከምዚ ይብል (መዝሙር ...)` → **እቲ ዘማሪ ከምዚ ይብል** ("the Psalmist says")
+- `እቲ (proper) ከምዚ ይብል፦ (2 ቆሮንቶስ ...)` → **እቲ ሃዋርያ ከምዚ ይብል፦** ("the Apostle says")
+- `(Ger. 3:5)` vs `(Ger. 3:53)` → Verify the quoted text against Genesis (**ዘፍጥረት 3፡5**) vs Lamentations (**ሰቆቃወ ኤርምያስ 3፡53**).

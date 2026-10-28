@@ -8,6 +8,8 @@ Validates Tigrinya text against morphological, orthographic, and anti-leakage ru
 4. Pro-drop & accusative checks (flags redundant 'ኣነ' and checks 'ነቲ/ነታ')
 5. Self-test mode verifying benchmarks from references/examples.md
 6. Controlled ecclesiastical house-style spellings
+7. Latin residue & parenthetical English gloss filter (flags untranslated English words/citations)
+8. Negative-verb morphology filter (flags '*ኣይድወንን' blend and verifies '-ንን' endings)
 """
 
 import sys
@@ -71,6 +73,18 @@ DEPRECATED_HOUSE_STYLE = {
     "ስልጣን": "ሥልጣን", "ምስጢር": "ምሥጢር", "መሰረት": "መሠረት",
     "ስምረት": "ሥምረት", "ድሕነት": "ድኅነት", "ሓጢኣት": "ኃጢኣት",
     "ግዜ": "ጊዜ", "ኮከብ": "ኰከብ", "ኮኾብ": "ኰከብ",
+}
+
+FORBIDDEN_MORPHOLOGICAL_BLENDS = {
+    "ኣይድወንን": "Morphological blend of 'ደው ኣይብልን' (does not stop) and 'ኣይውሰንን' (is not limited/bounded). Disambiguate by context.",
+}
+
+VALID_DOUBLE_N_NEGATIVES = {
+    "ኣይስእንን", "ኣይውሰንን", "ኣይድህንን", "ኣይሕዘንን", "ኣይኮነንን",
+    "ኣይኣምንን", "ኣይምስገንን", "ኣይፈጠንን", "ኣይፈልጡንን", "ኣይረኸብኩምንን",
+    "ኣይሓደገንን", "ኣይሃበንን", "ኣይተኻእለንን", "ኣይተፈቕደንን", "ኣይተዋህበንን",
+    "ኣይርከبنን", "ኣይקبلንን", "ኣይፍለጥንን", "ኣይዝንጋዕንን", "ኣይጥቀምንን",
+    "ኣይקረብንን", "ኣይፈርህንን", "ኣይጠፍእንን", "ኣይዓግبنን", "ኣይኽእልንን",
 }
 
 
@@ -153,7 +167,32 @@ def audit_tigrinya(text: str, strict: bool = True) -> Dict[str, Any]:
                 "message": f"Deprecated house-style form '{deprecated}'. Use '{canonical}'."
             })
 
-    # 6. Check pro-drop heuristic
+    # 6. Check forbidden morphological blends and suspicious double -ንን negative endings
+    for word in tokens:
+        if word in FORBIDDEN_MORPHOLOGICAL_BLENDS:
+            issues.append({
+                "type": "MORPHOLOGICAL_BLEND",
+                "matched": word,
+                "message": f"Invalid verb form '{word}': {FORBIDDEN_MORPHOLOGICAL_BLENDS[word]}"
+            })
+        elif word.startswith("ኣይ") and word.endswith("ንን") and word not in VALID_DOUBLE_N_NEGATIVES:
+            warnings.append({
+                "type": "NEGATIVE_ENDING_REVIEW",
+                "matched": word,
+                "message": f"Double '-ንን' negative verb '{word}' detected. Verify that the root ends in '-ን' or carries a '-ኒ/-አን' object suffix."
+            })
+
+    # 7. Check for Latin residue (untranslated English words, parenthetical echoes, or English book citations)
+    latin_matches = re.findall(r"[A-Za-z]{2,}", text)
+    if latin_matches and "contrasted" not in text.lower():
+        joined = ", ".join(latin_matches[:5])
+        issues.append({
+            "type": "LATIN_RESIDUE",
+            "matched": joined,
+            "message": f"Untranslated Latin/English residue '{joined}' inside Tigrinya prose. Localize book citations, remove redundant English parenthetical glosses, or transliterate into Geʽez."
+        })
+
+    # 8. Check pro-drop heuristic
     if re.search(r"\bኣነ\b.*[ኩዐ]\b", text) and "contrasted" not in text.lower():
         warnings.append({
             "type": "PRO_DROP_NOTE",
@@ -187,6 +226,11 @@ def run_test_suite() -> bool:
         ("ስለምንታይ ኰከብ ተጠቒሙ?", False, "Punctuation failure: Latin question mark after Geʽez text"),
         ("እቲ ምሥጢር ኣብ ሕይወት ይግለጽ።", True, "Controlled ecclesiastical house-style benchmark"),
         ("ኣብ ክልተ ትኸፍሎ፧ ነቲ ተዋህዶ ተፍርሶ ኣለኻ፧", True, "Theological dialogue benchmark from Google AI Studio"),
+        ("ኣብቲ ግብራዊ ኃጢኣት ጥራይ ኣይድወንን እዩ።", False, "Morphological blend failure: '*ኣይድወንን' instead of 'ደው ኣይብልን'"),
+        ("ኣብቲ ግብራዊ ኃጢኣት ጥራይ ደው ኣይብልን እዩ።", True, "Corrected phrasal negative: 'ደው ኣይብልን'"),
+        ("ብቦታ ወይ ብጊዜ ኣይውሰንን እዩ።", True, "Valid root-final '-ን' negative verb: 'ኣይውሰንን'"),
+        ("ቅዱስ ጀሮም (St. Jerome) ከምዚ በለ (Matt 6፡1)።", False, "Latin residue failure: parenthetical English gloss and book citation"),
+        ("ቅዱስ ጀሮም ከምዚ በለ (ማቴዎስ 6፡1)።", True, "Clean localized patristic attribution and Tigrinya citation"),
     ]
 
     all_passed = True

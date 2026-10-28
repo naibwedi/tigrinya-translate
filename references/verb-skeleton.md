@@ -39,6 +39,13 @@ Never connect sequential actions with English-style conjunctions ("and", *-ን*,
 2. **Subordinate / Relative Clause:** Prefix **ዘይ-** (drop the final *-ን*)
    - *ዘይፈልጥ ሰብ* (*zäy-fälləṭ säb* = a person who does not know)
    - *ስለ ዘይመጸ* (*səlä zäy-mäṣ'ä* = because he did not come)
+3. **Double `-ንን` Negative Endings & Morphological Blend Guard:**
+   - A negated main-clause verb legitimately ends in **`-ንን`** ONLY in two grammatical environments:
+     1. **Root-final `-ን` verbs** where the first `-ን` is the 3rd radical of the root and the second `-ን` is the negative enclitic: e.g., **ኣይስእንን** (√ስእነ "does not lack"), **ኣይውሰንን** (√ወሰነ "is not limited/bounded"), **ኣይድህንን** (√ድሀነ "is not saved"), **ኣይሕዘንን** (√ሐዘነ "does not grieve"), **ኣይኮነንን**, **ኣይኣምንን** (√አምነ "does not believe"), **ኣይምስገንን**, **ኣይፈጠንን**.
+     2. **Object-pronoun suffixes ending in `-ን`** (`-ኒ` 1s or `-አን/-ን` 3pf) followed by the negative enclitic `-ን`: e.g., **ኣይፈልጡንን** ("they do not know me"), **ኣይረኸብኩምንን**, **ኣይሓደገንን**, **ኣይሃበንን**.
+   - **Forbidden Morphological Blend (`*ኣይድወንን`):** Never blend **ደው ምባል** ("to stop/halt") and **ምውሳን** ("to limit/bound") into the non-existent hybrid form `*ኣይድወንን`. Always disambiguate by context:
+     - *"does not stop [only at X]"* → **ደው ኣይብልን** (e.g., *ኣብቲ ግብራዊ ኃጢኣት ጥራይ ደው ኣይብልን እዩ*)
+     - *"is not limited / bounded [by place or time]"* → **ኣይውሰንን** (e.g., *ብቦታ ወይ ብጊዜ ኣይውሰንን እዩ*)
 
 ### D. Interrogative Particle ዶ
 Yes/no questions append the enclitic particle **ዶ**:
