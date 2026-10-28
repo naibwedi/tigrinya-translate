@@ -8,7 +8,7 @@ Validates Tigrinya text against morphological, orthographic, and anti-leakage ru
 4. Pro-drop & accusative checks (flags redundant 'ኣነ' and checks 'ነቲ/ነታ')
 5. Self-test mode verifying benchmarks from references/examples.md
 6. Controlled ecclesiastical house-style spellings
-7. Latin residue & parenthetical English gloss filter (flags untranslated English words/citations)
+7. Approved bilingual parenthetical glosses vs. unapproved Latin residue
 8. Negative-verb morphology filter (flags '*ኣይድወንን' blend and verifies '-ንን' endings)
 """
 
@@ -87,6 +87,14 @@ VALID_DOUBLE_N_NEGATIVES = {
     "ኣይקረብንን", "ኣይፈርህንን", "ኣይጠፍእንን", "ኣይዓግبنን", "ኣይኽእልንን",
 }
 
+APPROVED_LATIN_PATTERNS = [
+    re.compile(r"\bG\.?\s*H\.?\s*Box\b", re.IGNORECASE),
+    re.compile(r"\bG\.?\s*G\.?\s*Boy\b", re.IGNORECASE),
+    re.compile(r"\bJames\s+Strong\b", re.IGNORECASE),
+    re.compile(r"[\"“]Greek Dictionary of the New Testament[\"”]", re.IGNORECASE),
+    re.compile(r"\((?:St\.|Father|Bishop)?\s*(?:Jerome|John Chrysostom|Augustine|Hilary of Poitiers|Hilary|Jacob of Serugh|Gregory the Great|Gregory of Nazianzus|Gregory of Nyssa|Cyril of Jerusalem|Origen|Ambrose|Cyprian|John Climacus|John Cassian|Ignatius|John of Kronstadt|Didascalia|Philoxenus|Eusebius of Caesarea|Anthony the Great|Gnostics|Essenes|Lex Talionis|Sanhedrin|epiousios|ousia|epienai|epiousa|epi|eimi|paraggelia|Corban|Almah|Tu es Petrus|Tu es Petra|Eli, Eli, lema sabachthani|phylacteries|proselytes|anti-Christ|Mammon)\)", re.IGNORECASE),
+]
+
 
 def clean_tokens(text: str) -> List[str]:
     # Extract words without punctuation
@@ -97,6 +105,14 @@ def clean_tokens(text: str) -> List[str]:
         if cleaned:
             tokens.append(cleaned)
     return tokens
+
+
+def extract_latin_residue(text: str) -> List[str]:
+    cleaned = text
+    for pat in APPROVED_LATIN_PATTERNS:
+        cleaned = pat.sub("", cleaned)
+    # Return any remaining Latin words of 2 or more letters
+    return re.findall(r"[A-Za-z]{2,}", cleaned)
 
 
 def audit_tigrinya(text: str, strict: bool = True) -> Dict[str, Any]:
@@ -182,14 +198,14 @@ def audit_tigrinya(text: str, strict: bool = True) -> Dict[str, Any]:
                 "message": f"Double '-ንን' negative verb '{word}' detected. Verify that the root ends in '-ን' or carries a '-ኒ/-አን' object suffix."
             })
 
-    # 7. Check for Latin residue (untranslated English words, parenthetical echoes, or English book citations)
-    latin_matches = re.findall(r"[A-Za-z]{2,}", text)
-    if latin_matches and "contrasted" not in text.lower():
-        joined = ", ".join(latin_matches[:5])
+    # 7. Check for unapproved Latin residue (untranslated words or English citations)
+    unapproved_latin = extract_latin_residue(text)
+    if unapproved_latin and "contrasted" not in text.lower():
+        joined = ", ".join(unapproved_latin[:5])
         issues.append({
             "type": "LATIN_RESIDUE",
             "matched": joined,
-            "message": f"Untranslated Latin/English residue '{joined}' inside Tigrinya prose. Localize book citations, remove redundant English parenthetical glosses, or transliterate into Geʽez."
+            "message": f"Unapproved Latin/English residue '{joined}' inside Tigrinya prose. Localize Scripture citations or use approved bilingual parenthetical format."
         })
 
     # 8. Check pro-drop heuristic
@@ -229,8 +245,11 @@ def run_test_suite() -> bool:
         ("ኣብቲ ግብራዊ ኃጢኣት ጥራይ ኣይድወንን እዩ።", False, "Morphological blend failure: '*ኣይድወንን' instead of 'ደው ኣይብልን'"),
         ("ኣብቲ ግብራዊ ኃጢኣት ጥራይ ደው ኣይብልን እዩ።", True, "Corrected phrasal negative: 'ደው ኣይብልን'"),
         ("ብቦታ ወይ ብጊዜ ኣይውሰንን እዩ።", True, "Valid root-final '-ን' negative verb: 'ኣይውሰንን'"),
-        ("ቅዱስ ጀሮም (St. Jerome) ከምዚ በለ (Matt 6፡1)።", False, "Latin residue failure: parenthetical English gloss and book citation"),
-        ("ቅዱስ ጀሮም ከምዚ በለ (ማቴዎስ 6፡1)።", True, "Clean localized patristic attribution and Tigrinya citation"),
+        ("ቅዱስ ጀሮም (St. Jerome) ከምዚ በለ (Matt 6፡1)።", False, "Latin residue failure: unlocalized English Scripture citation (Matt 6:1)"),
+        ("ቅዱስ ጀሮም (St. Jerome) ከምዚ በለ (ማቴዎስ 6፡1)።", True, "Approved bilingual patristic attribution and localized Tigrinya citation"),
+        ("እቶም ግኖስቲካውያን (Gnostics) ከምዚ በሉ።", True, "Approved bilingual historical sect gloss: ግኖስቲካውያን (Gnostics)"),
+        ("እታ “ኤፒኡስዮስ” (epiousios) እትብል ቃል ካብ “ኡስያ” (ousia) ዝመጸት እያ።", True, "Approved Greek/Latin etymology glosses"),
+        ("G. H. Box ወንጌላዊ ቅዱስ ማቴዎስ ይብል።", True, "Approved direct English modern scholar reference"),
     ]
 
     all_passed = True

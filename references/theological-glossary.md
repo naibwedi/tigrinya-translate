@@ -118,10 +118,9 @@ When a project requests exact Scripture quotations from its verified Tigrinya Bi
 
 Preserve short snippets, isolated words and paraphrases without database substitution or expansion. Double quotation marks are a useful signal, not sufficient evidence of a full verse. Verify the citation, source scope and quotation boundary together; a short complete verse may still qualify. Hold abbreviated, combined, uncertain or edition-sensitive quotations for source comparison. Never guess missing verse boundaries or reconstruct Bible text from memory. Without verified supplied Bible text, translate the source faithfully and flag it for later lookup.
 
-
 ---
 
-## 9. Canonical Biblical Citations, Patristic Names & Commentary Hygiene
+## 9. Canonical Biblical Citations, Patristic Names & Bilingual Glossing Policy
 
 Learned and verified across the 28-chapter *Tigrinya Catena* (St. Matthew Patristic Commentary) editorial audit:
 
@@ -144,30 +143,47 @@ Never leave English or Latin book names/abbreviations (`Matt`, `Luke`, `Rom`, `1
 - `(Joel 2:15)` → **(ዮኤል 2፡15)**
 - `(Amos 8:9)` → **(ኣሞጽ 8፡9)**
 
-### B. Zero Redundant English Parenthetical Echoes
-Once a Church Father, historical sect, or theological term is rendered in Tigrinya, **never** append the English source word in parentheses:
-- Write **ቅዱስ ጀሮም**, never `ቅዱስ ጀሮም (St. Jerome)`
-- Write **ቅዱስ ሂላሪ**, never `ቅዱስ ሂላሪ (St. Hilary)`
-- Write **ኦሪገን**, never `ኦሪገን (Origen)` or `ኦሪገን (Oreganus)`
-- Write **ተርቱልያን**, never `ተርቱልያን (Tertullian)`
-- Write **ኣባ ቴዎናስ**, never `ኣባ ቴዎናስ (Abba Theonas)`
-- Write **ግኖስቲካውያን**, never `ግኖስቲካውያን (Gnostics)`
-- Write **ኤሴናውያን**, never `ኤሴናውያን (Essenes)`
-- Write **ሰዱቃውያን**, never `ሰዱቃውያን (Sadducees)`
-- Write **ቅዱስ ስምዖን ሰፋዪ ሳእኒ**, never `Simon the tamer` / `Simon the tanner`
+### B. Approved Bilingual Parenthetical Glossing Policy
+For reader clarity and unambiguous scholarly identification, ambiguous subjects, Church Fathers, historical sects, and dogmatic terms take **Tigrinya first, followed by the standardized English/Latin in parentheses**:
 
-### C. Transliterate Classical Greek, Latin & Aramaic Etymologies into Ethiopic
-When patristic commentary discusses Greek, Latin, or Aramaic terms in prose, transliterate or translate them into Geʽez script so no raw Latin characters remain in the Tigrinya paragraph:
-- *epiousios* (`epi` + `ousia` / `iousios`) → **ኤፒኡስዮስ** (**ኤፒ** + **ኡስያ** / **ኢኡስዮስ**)
-- *Lex Talionis* → **ሕጊ ምፍዳይ ሕነ**
-- *Corban* → **ቁርባን**
-- *phylacteries* → **ክታባት (ፊላክተሪ)**
-- *tu es Petrus, et super hanc petram aedificabo ecclesiam meam* → **«ቱ ኤስ ጴጥሩስ፣ ኤት ሱፐር ሃንክ ፔትራም ኤዲፊካቦ ኤክለስያም ሜኣም»** (followed by the Tigrinya meaning)
-- *Eli, Eli, lema sabachthani* → **«ኤሊ፣ ኤሊ፣ ለማ ሳባክታኒ»**
+1. **Church Fathers & Early Writers:**
+   - **ቅዱስ ጀሮም (St. Jerome)**
+   - **ቅዱስ ዮሓንስ ኣፈወርቅ (St. John Chrysostom)**
+   - **ቅዱስ ኣውግስጢኖስ (St. Augustine)**
+   - **ቅዱስ ሂላሪ ዘፖዋቲየ (St. Hilary of Poitiers)**
+   - **ቅዱስ ያዕቆብ ዘሥሩግ (St. Jacob of Serugh)**
+   - **ቅዱስ ጎርጎርዮስ ዓቢይ (St. Gregory the Great)**
+   - **ቅዱስ ጎርጎርዮስ ዘናዚያንዙ (St. Gregory of Nazianzus)**
+   - **ቅዱስ ቄርሎስ ዘኢየሩሳሌም (St. Cyril of Jerusalem)**
+   - **ሊቅ ኦሪገን (Origen)**
+   - **ቅዱስ ቆጵርያኖስ (St. Cyprian)**
+   - **ቅዱስ ኣምብሮስዮስ (St. Ambrose)**
+   - **ቅዱስ ዮሓንስ ክሊማኮስ (St. John Climacus)**
+   - **ቅዱስ ዮሓንስ ካስያኖስ (St. John Cassian)**
+   - **ቅዱስ ኢግናጥዮስ (St. Ignatius)**
+   - **መጽሓፈ ዲስቆሎስ (Didascalia)**
 
-### D. Source-Scan OCR Corruption Guards
-When translating from scanned English/Arabic patristic editions (such as Fr. Tadros Yacoub Malaty), inspect and repair OCR corruptions using the biblical citation context rather than copying corrupted tokens into parentheticals:
-- `(Eltiloria)` next to Bathsheba (Matt 1:6) → **ሰበይቲ ኦርዮ** ("wife of Uriah")
-- `እቲ (human s) ከምዚ ይብል (መዝሙር ...)` → **እቲ ዘማሪ ከምዚ ይብል** ("the Psalmist says")
-- `እቲ (proper) ከምዚ ይብል፦ (2 ቆሮንቶስ ...)` → **እቲ ሃዋርያ ከምዚ ይብል፦** ("the Apostle says")
-- `(Ger. 3:5)` vs `(Ger. 3:53)` → Verify the quoted text against Genesis (**ዘፍጥረት 3፡5**) vs Lamentations (**ሰቆቃወ ኤርምያስ 3፡53**).
+2. **Historical Sects & Dogmatic Terms:**
+   - **ግኖስቲካውያን (Gnostics)**
+   - **ኤሴናውያን (Essenes)**
+   - **ሕጊ ምፍዳይ ሕነ (Lex Talionis)**
+   - **ሳንሄድሪን (Sanhedrin)**
+   - **ዓልማህ (Almah)**
+
+3. **Greek, Latin & Hebrew Classical Etymologies:**
+   - **ኤፒኡስዮስ (epiousios)**
+   - **ኡስያ (ousia)**
+   - **ፓራጌልያ (paraggelia)**
+   - **ቁርባን (Corban)**
+   - **«ቱ ኤስ ጴጥሩስ» (Tu es Petrus)**
+
+4. **Modern Scholars & Academic References:**
+   - Write modern scholar names and academic lexicon titles directly in English (e.g. **G. H. Box**, **James Strong, Greek Dictionary of the New Testament**).
+
+### C. Reject Corrupted OCR & Untranslated Common Words
+Do not leave stray English nouns or corrupted OCR fragments in parentheses. Clean them or translate them:
+- `(Eltiloria)` → **ሰበይቲ ኦርዮ**
+- `እቲ (human s)` → **እቲ ዘማሪ**
+- `እቲ (proper)` → **እቲ ሃዋርያ**
+- `(embrowns)` → **ቅንኣት**
+- Remove OCR noise: `(five stages)`, `(scored)`, `(roof)`, `(buying)`, `(soft-papered)`, `(thin life)`.
