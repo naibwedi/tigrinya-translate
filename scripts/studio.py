@@ -1041,20 +1041,22 @@ class StudioRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path == "/" or self.path.startswith("/?"):
+        clean_path = self.path.split("?")[0].rstrip("/") or "/"
+        if clean_path in ("/", "/index.html"):
             body = HTML_TEMPLATE.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
-        elif self.path == "/api/health":
+        elif clean_path == "/api/health" or clean_path.endswith("/health"):
             self._send_json(200, {"status": "ok", "app": "tigrinya-web-studio", "version": "2.0.0"})
         else:
             self.send_response(404)
             self.end_headers()
 
     def do_POST(self):
+        clean_path = self.path.split("?")[0].rstrip("/")
         content_length = int(self.headers.get("Content-Length", 0))
         raw_body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
         try:
@@ -1069,10 +1071,10 @@ class StudioRequestHandler(BaseHTTPRequestHandler):
         if not isinstance(text, str):
             text = str(text) if text is not None else ""
 
-        if self.path == "/api/check":
+        if clean_path == "/api/check" or clean_path.endswith("/check"):
             audit_result = audit_tigrinya(text, strict=True)
             self._send_json(200, audit_result)
-        elif self.path == "/api/fix":
+        elif clean_path == "/api/fix" or clean_path.endswith("/fix"):
             fixed_text, fixes = fix_deterministic(text)
             self._send_json(200, {
                 "original_text": text,
@@ -1080,7 +1082,7 @@ class StudioRequestHandler(BaseHTTPRequestHandler):
                 "fixes_count": len(fixes),
                 "fixes": fixes,
             })
-        elif self.path == "/api/ai-check":
+        elif clean_path == "/api/ai-check" or clean_path.endswith("/ai-check"):
             ai_result = run_gemini_grammar_check(text)
             self._send_json(200, ai_result)
         else:

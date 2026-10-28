@@ -25,8 +25,16 @@ Designed for AI assistants (Grok, Claude, Codex, Antigravity) and developers bui
 english-tigrinya-translator/
 ├── SKILL.md                                 # Core agent skill instructions and 5-step decision procedure
 ├── README.md                                # Project documentation
+├── vercel.json                              # Zero-config Vercel deployment configuration
+├── public/
+│   └── index.html                           # Static Grammarly-style Tigrinya Studio UI for Vercel
+├── api/
+│   └── index.py                             # Vercel Python Serverless Function (/api/check, /api/fix, /api/ai-check)
 ├── scripts/
-│   └── audit_translation.py                 # Automated linguistic quality audit and benchmark runner
+│   ├── audit_translation.py                 # Automated linguistic quality audit, auto-fixer, and CLI
+│   ├── studio.py                            # Local Web Studio HTTP server & request handler
+│   ├── sync_skill.py                        # Multi-repository SHA-256 skill synchronizer
+│   └── test_studio.py                       # Automated studio API & UI integration tests
 ├── references/
 │   ├── decisions.md                         # Dialect defaults, register rules, and English "you" resolution
 │   ├── pronouns.md                          # Independent pronouns, polite forms, vocatives, and affix tables
@@ -62,8 +70,8 @@ The skill should appear under the `Skills` list with source `user`.
 
 ## Automated Linguistic Audit, Auto-Fixing & Web Studio
 
-### 1. Interactive Grammarly-Style Web Studio
-Launch the standalone zero-dependency Web Studio with color-coded underlines, interactive popover cards, 1-click replacement, and writing quality scoring:
+### 1. Interactive Grammarly-Style Web Studio (Local & Vercel Cloud)
+Launch the standalone zero-dependency Web Studio locally with color-coded underlines, interactive popover cards, 1-click replacement, and writing quality scoring:
 
 ```powershell
 python scripts/studio.py
@@ -71,6 +79,12 @@ python scripts/studio.py
 python scripts/audit_translation.py --studio
 ```
 Open `http://localhost:8765` in any browser.
+
+#### Deploying to Vercel
+This repository is pre-configured for zero-config deployment on **Vercel**:
+1. Import `naibwedi/english-tigrinya-translator` into Vercel.
+2. Add `GEMINI_API_KEY` under **Project Settings → Environment Variables** to enable the cloud **✨ Deep AI Check** button.
+3. Deploy — Vercel serves `public/index.html` at `/` and routes `/api/check`, `/api/fix`, `/api/ai-check`, and `/api/health` to `api/index.py`.
 
 ### 2. Benchmark Verification Test Suite
 Run the 36-test benchmark test suite verifying punctuation, dash preservation, Geʽez spacing, and character offsets:
