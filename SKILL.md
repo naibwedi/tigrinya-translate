@@ -47,11 +47,13 @@ Apply the morphological and syntactic rules documented in the references:
 ---
 
 ## Step 4 — Check Before Answering (Pre-flight Audit)
-Verify the draft against these mandatory filters (and run `python scripts/audit_translation.py` when auditing files):
+Verify the draft against these mandatory filters (and run `python scripts/audit_translation.py`, `python scripts/audit_translation.py --fix`, or open `python scripts/studio.py` for interactive editing):
 1. **Anti-Amharic Filter:** Open [`references/anti-amharic.md`](file:///references/anti-amharic.md) and reject every Amharic intrusion (e.g., ensure *ኣነ* not *እኔ*, *እዩ* not *ነው*, *መግቢ* not *ምግብ*, *ማይ* not *ውሃ*, *ገዛ* not *ቤት*, *ኣይ-…-ን* not *አል-…-ም*).
 2. **Agreement & Negative Morphology Consistency:** Check that verb person, number, and gender endings match the decisions made in Step 2, and verify that any `-ንን` ending on a negated verb belongs to a root-final `-ን` stem or an object suffix (`-ኒ`/`-አን`), never a morphological blend like `*ኣይድወንን`.
 3. **Zero Latin Residue & Parenthetical Echoes:** Ensure no raw English/Latin words, parenthetical echoes (`ቅዱስ ጀሮም (St. Jerome)`, `ኦሪገን (Origen)`, `ግኖስቲካውያን (Gnostics)`), or English biblical citations (`(Matt 6:1)`, `(1 Tim 1:9)`) remain in Tigrinya prose. Localize all Scripture citations with canonical Tigrinya book names and Ethiopic `፡` (`(ማቴዎስ 6፡1)`, `(1 ጢሞቴዎስ 1፡9)`), and transliterate Greek/Latin/Aramaic etymologies into Ethiopic script.
-4. **Orthography & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md). Ensure *አ* vs *ዐ*, *ሰ* vs *ሠ*, and *ጸ* vs *ፀ* are consistent. Use Geʽez punctuation (`።`, `፣`, `፤`, `፦`).
+4. **Orthography, AI Dashes & Punctuation:** Open [`references/orthography.md`](file:///references/orthography.md).
+   - Enforce Geʽez punctuation (`።`, `፣`, `፤`, `፦`, `፧`). Never allow spaces immediately preceding Geʽez punctuation (` ።`).
+   - Reject AI prose dashes (`--`, `—`, prose `–`, and prose ` - `) in favor of Geʽez punctuation (`፦ ` or `፤ `), while strictly preserving numeric chapter/verse ranges (`1-9`, `21–28`), negative prefixes (`ዘይ-ተፈልጠ`), compound words (`ስነ-ምግባር`), and patristic quote bullets (`+ `).
    - Outside supplied verbatim Scripture quotations, enforce the controlled house spellings in the reference, including **ሕይወት**, **መሥዋዕት**, **ነቢያት**, **ቤተ ክርስቲያን**, **ሠለስተ**, **ሥልጣን**, **ምሥጢር**, **መሠረት**, **ሥምረት**, **ድኅነት**, **ኃጢኣት**, **ጊዜ**, and **ኰከብ**.
    - Use **፧** for questions. Retain standard Eritrean **መጹ**; do not replace it mechanically with **መጽኡ**.
 5. **Latin Gemination:** In the Latin pronunciation line, mark gemination by doubling the consonant (e.g. *qärräbä* vs *qäräbä*).

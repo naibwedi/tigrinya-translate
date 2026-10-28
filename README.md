@@ -60,16 +60,45 @@ The skill should appear under the `Skills` list with source `user`.
 
 ---
 
-## Automated Linguistic Audit
+## Automated Linguistic Audit, Auto-Fixing & Web Studio
 
-Run the automated validation script against benchmark sentences or interactive text:
+### 1. Interactive Grammarly-Style Web Studio
+Launch the standalone zero-dependency Web Studio with color-coded underlines, interactive popover cards, 1-click replacement, and writing quality scoring:
 
 ```powershell
-# Run the built-in benchmark test suite:
-python scripts/audit_translation.py --test
+python scripts/studio.py
+# or
+python scripts/audit_translation.py --studio
+```
+Open `http://localhost:8765` in any browser.
 
-# Audit an individual translation string:
-python scripts/audit_translation.py "ነቲ መግቢ በሊዐ።"
+### 2. Benchmark Verification Test Suite
+Run the 36-test benchmark test suite verifying punctuation, dash preservation, Geʽez spacing, and character offsets:
+
+```powershell
+python scripts/audit_translation.py --test
+```
+
+### 3. Deterministic Auto-Fixing CLI
+Fix AI dashes, pre-punctuation spacing, stray Latin colons, and house-style variants while protecting verse ranges and compound words:
+
+```powershell
+python scripts/audit_translation.py --fix "እቲ ምስጢር -- ኣብ ህይወት እዩ ።"
+# Output: "እቲ ምሥጢር፦ ኣብ ሕይወት እዩ።"
+```
+
+### 4. Deep Gemini AI Grammar Check
+Run deep semantic and syntactic analysis (SOV, gerund chaining, pro-drop) using Gemini AI:
+
+```powershell
+python scripts/audit_translation.py --ai "ነቲ መግቢ በሊዐ።"
+```
+
+### 5. Multi-Repository Skill Synchronization
+Synchronize canonical skill updates across `tigrinya-catena` and global Antigravity skill folders:
+
+```powershell
+python scripts/sync_skill.py
 ```
 
 ---

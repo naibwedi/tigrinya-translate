@@ -1,0 +1,1139 @@
+#!/usr/bin/env python3
+"""
+Tigrinya Web Studio & Local API Server
+Version 2.0.0 (Grammarly-Style Tigrinya AI & Rule Studio)
+
+Zero-dependency local HTTP server using Python's built-in http.server.
+Provides an interactive, Impeccable Ethiopic writing & proofreading environment with:
+- Live real-time deterministic rule checking with exact character offsets
+- 5-category color-coded squiggly underlines
+- Interactive hover/click popover cards with 1-click replacement & dismissal
+- 1-click 'Fix All Deterministic' batch auto-fixing
+- Deep Gemini AI grammar check (SOV, gerundive chaining, pro-drop, ecclesiastical register)
+- Real-time Writing Quality Score (0-100)
+- Single editor vs Dual Side-by-Side (English source + Tigrinya draft) modes
+"""
+
+import sys
+import os
+import json
+import argparse
+import webbrowser
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import socketserver
+from typing import Optional
+
+# Ensure parent directory is in path to import audit_translation
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from audit_translation import audit_tigrinya, fix_deterministic, run_gemini_grammar_check
+
+HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html lang="ti" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tigrinya Studio — Grammarly-Style Proofreader & AI Auditor</title>
+  <style>
+    :root {
+      --bg-main: #0a0e17;
+      --bg-surface: #121927;
+      --bg-surface-elevated: #1a2336;
+      --border-subtle: #232f46;
+      --border-focus: #3b82f6;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --cat-sov: #3b82f6;
+      --cat-punct: #f59e0b;
+      --cat-house: #a855f7;
+      --cat-amh: #ef4444;
+      --cat-theo: #10b981;
+      
+      --font-ethiopic: 'Nyala', 'Abyssinica SIL', 'Kefa', 'Noto Sans Ethiopic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-ethiopic);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease-in-out;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-ai {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(124, 58, 237, 0.25);
+    }
+    .btn-ai:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-outline {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border-color: var(--border-subtle);
+    }
+    .btn-outline:hover { background: #232f46; border-color: var(--border-focus); }
+
+    select.preset-select {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Score Meter in Header */
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .score-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .score-emerald { background: var(--cat-theo); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+    .score-amber { background: var(--cat-punct); box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); }
+    .score-red { background: var(--cat-amh); box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+
+    /* Main Studio Layout */
+    .studio-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 61px);
+      overflow: hidden;
+    }
+
+    /* Editor Column */
+    .editor-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg-main);
+      border-right: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .editor-toolbar {
+      padding: 0.6rem 1.25rem;
+      background: rgba(18, 25, 39, 0.6);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .editor-panes {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Source Pane (for dual view) */
+    .source-pane {
+      width: 40%;
+      border-right: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.4);
+      display: none;
+      flex-direction: column;
+    }
+    .source-pane.active { display: flex; }
+    .source-pane textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+
+    /* Layered Grammarly Editor */
+    .target-pane {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .editor-wrapper {
+      position: relative;
+      flex: 1;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .editor-backdrop, .editor-textarea {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100%;
+      padding: 1.5rem;
+      font-size: 1.25rem;
+      line-height: 1.85;
+      font-family: var(--font-ethiopic);
+      white-space: pre-wrap;
+      word-break: break-word;
+      letter-spacing: 0.01em;
+      border: none;
+      outline: none;
+      tab-size: 4;
+    }
+
+    .editor-backdrop {
+      color: transparent;
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .editor-textarea {
+      background: transparent;
+      color: var(--text-main);
+      z-index: 2;
+      resize: none;
+      caret-color: #60a5fa;
+    }
+
+    /* Grammarly Squiggly Underlines by Category */
+    .issue-highlight {
+      position: relative;
+      cursor: pointer;
+      border-radius: 2px;
+      pointer-events: auto;
+    }
+    .issue-grammar_sov {
+      text-decoration: underline wavy var(--cat-sov);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 5px;
+      background: rgba(59, 130, 246, 0.12);
+    }
+    .issue-punctuation_ai {
+      text-decoration: underline wavy var(--cat-punct);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 5px;
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .issue-orthography_house_style {
+      text-decoration: underline wavy var(--cat-house);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 5px;
+      background: rgba(168, 85, 247, 0.12);
+    }
+    .issue-anti_amharic {
+      text-decoration: underline wavy var(--cat-amh);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 5px;
+      background: rgba(239, 68, 68, 0.14);
+    }
+    .issue-theological_glossary {
+      text-decoration: underline wavy var(--cat-theo);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 5px;
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    /* Side Panel */
+    .side-panel {
+      width: 380px;
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .panel-header h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.6rem;
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .cat-pill {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+    .cat-pill.active {
+      border-color: var(--border-focus);
+      color: #fff;
+      background: #232f46;
+    }
+    .cat-pill .badge {
+      font-size: 0.68rem;
+      padding: 0.05rem 0.3rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Cards List */
+    .cards-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .issue-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.9rem;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+    }
+    .issue-card:hover, .issue-card.focused {
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+    }
+    .card-category {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .card-severity {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: capitalize;
+    }
+    .sev-error { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .sev-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .sev-suggestion { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+
+    .card-message {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      line-height: 1.45;
+      margin-bottom: 0.65rem;
+    }
+
+    .card-diff {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(10, 14, 23, 0.6);
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 0.65rem;
+    }
+    .diff-old {
+      color: #f87171;
+      text-decoration: line-through;
+    }
+    .diff-arrow { color: var(--text-dim); }
+    .diff-new {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    .card-btn {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .card-btn-apply {
+      background: #059669;
+      color: #fff;
+      border-color: #059669;
+    }
+    .card-btn-apply:hover { background: #047857; }
+    .card-btn-dismiss:hover { background: #232f46; }
+
+    /* Popover Card Floating */
+    #popover {
+      position: absolute;
+      background: #1e293b;
+      border: 1px solid #3b82f6;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      padding: 0.9rem;
+      z-index: 100;
+      width: 320px;
+      display: none;
+      pointer-events: auto;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1e293b;
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #fff;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+    .toast.show { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--text-dim);
+    }
+    .empty-icon {
+      font-size: 2rem;
+      color: var(--cat-theo);
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">ትግ</div>
+      <div class="brand-text">
+        <h1>Tigrinya Studio</h1>
+        <p>Grammarly-Style Linguistic & Patristic Proofreader</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Quality Score Meter -->
+      <div class="score-badge" id="scoreBadge">
+        <span class="score-dot score-emerald" id="scoreDot"></span>
+        <span>Score: <strong id="scoreVal">100</strong>/100</span>
+      </div>
+
+      <!-- Presets -->
+      <select class="preset-select" id="presetSelect" onchange="loadPreset(this.value)">
+        <option value="">-- Load Benchmark Preset --</option>
+        <option value="dirty_ai">1. Contaminated AI Draft (Dashes, Spacing, Amharic)</option>
+        <option value="patristic_clean">2. Ecclesiastical Patristic Benchmark (Pristine)</option>
+        <option value="gerundive_chain">3. Sequential Gerundive Actions</option>
+      </select>
+
+      <!-- View Toggle -->
+      <button class="btn btn-outline" id="viewToggleBtn" onclick="toggleDualView()">
+        ↔ Dual View
+      </button>
+
+      <!-- Fix All Deterministic -->
+      <button class="btn btn-primary" onclick="fixAllDeterministic()">
+        ⚡ Fix All Deterministic
+      </button>
+
+      <!-- Deep AI Grammar Check -->
+      <button class="btn btn-ai" id="aiBtn" onclick="runAiCheck()">
+        ✨ Deep AI Check
+      </button>
+
+      <!-- Copy & Clear -->
+      <button class="btn btn-outline" onclick="copyText()">📋 Copy</button>
+      <button class="btn btn-outline" onclick="clearText()">🔄 Clear</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="studio-container">
+    <!-- Editor Column -->
+    <div class="editor-column">
+      <div class="editor-toolbar">
+        <span id="charCount">0 characters | 0 words</span>
+        <span id="syncStatus">Audited in real-time</span>
+      </div>
+
+      <div class="editor-panes">
+        <!-- Optional English Source Pane -->
+        <div class="source-pane" id="sourcePane">
+          <div style="padding: 0.5rem 1.25rem; border-bottom: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-dim);">
+            ENGLISH SOURCE TEXT
+          </div>
+          <textarea id="sourceInput" placeholder="Paste or type English source text here for parallel translation review..."></textarea>
+        </div>
+
+        <!-- Target Tigrinya Editor with Layered Underlines -->
+        <div class="target-pane">
+          <div class="editor-wrapper" id="editorWrapper" onscroll="syncScroll()">
+            <div class="editor-backdrop" id="backdrop"></div>
+            <textarea
+              class="editor-textarea"
+              id="editor"
+              placeholder="ጽሓፍ ወይ ኣብዚ ለጥፍ... (Type or paste Tigrinya draft here to audit instantly)"
+              oninput="handleInput()"
+              spellcheck="false"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="side-panel">
+      <div class="panel-header">
+        <h2>Linguistic Audit Findings</h2>
+        <div class="category-pills">
+          <div class="cat-pill active" onclick="filterCategory('all', this)">
+            All <span class="badge" id="badgeAll">0</span>
+          </div>
+          <div class="cat-pill" onclick="filterCategory('anti_amharic', this)">
+            Anti-Amharic <span class="badge" id="badgeAmh">0</span>
+          </div>
+          <div class="cat-pill" onclick="filterCategory('punctuation_ai', this)">
+            Punctuation <span class="badge" id="badgePunct">0</span>
+          </div>
+          <div class="cat-pill" onclick="filterCategory('orthography_house_style', this)">
+            House Style <span class="badge" id="badgeHouse">0</span>
+          </div>
+          <div class="cat-pill" onclick="filterCategory('grammar_sov', this)">
+            Grammar <span class="badge" id="badgeSov">0</span>
+          </div>
+          <div class="cat-pill" onclick="filterCategory('theological_glossary', this)">
+            Theological <span class="badge" id="badgeTheo">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards List -->
+      <div class="cards-list" id="cardsList">
+        <div class="empty-state">
+          <div class="empty-icon">✓</div>
+          <p><strong>Pristine Text</strong></p>
+          <p style="font-size: 0.78rem; margin-top: 0.35rem;">No grammatical or typographical issues detected.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Floating Popover -->
+  <div id="popover">
+    <div class="card-top">
+      <span class="card-category" id="popCat">Category</span>
+      <span class="card-severity sev-error" id="popSev">Error</span>
+    </div>
+    <div class="card-message" id="popMsg">Explanation</div>
+    <div class="card-diff" id="popDiff">
+      <span class="diff-old" id="popOld">old</span>
+      <span class="diff-arrow">➔</span>
+      <span class="diff-new" id="popNew">new</span>
+    </div>
+    <div class="card-actions">
+      <button class="card-btn card-btn-dismiss" onclick="dismissCurrentIssue()">Dismiss</button>
+      <button class="card-btn card-btn-apply" id="popApplyBtn" onclick="applyCurrentIssue()">Apply Replacement</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Notice</div>
+
+  <script>
+    const PRESETS = {
+      dirty_ai: {
+        en: "The mystery -- in life it is revealed. He arrived , he ate the food. This is a good teacher.",
+        ti: "እቲ ምስጢር -- ኣብ ህይወት እዩ ። ንሱ መጺኡ , ነቲ ምግብ በሊዑ ። ይህ አስተማሪ ነው።"
+      },
+      patristic_clean: {
+        en: "The mystery is revealed in life. St. Jerome said this (Matthew 6:1).",
+        ti: "እቲ ምሥጢር ኣብ ሕይወት ይግለጽ። ቅዱስ ጀሮም (St. Jerome) ከምዚ በለ (ማቴዎስ 6፡1)።"
+      },
+      gerundive_chain: {
+        en: "He arrived, ate his food, and went home.",
+        ti: "መጺኡ፣ መግቡ በሊዑ፣ ናብ ገዛ ኸደ።"
+      }
+    };
+
+    let currentIssues = [];
+    let currentFilter = 'all';
+    let activeIssueIndex = null;
+    let auditTimer = null;
+
+    const editor = document.getElementById('editor');
+    const backdrop = document.getElementById('backdrop');
+    const popover = document.getElementById('popover');
+
+    function syncScroll() {
+      // In overlaid absolute layout, textarea and backdrop naturally align.
+    }
+
+    function handleInput() {
+      updateCounts();
+      clearTimeout(auditTimer);
+      auditTimer = setTimeout(runAudit, 150);
+    }
+
+    function updateCounts() {
+      const text = editor.value;
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      document.getElementById('charCount').textContent = `${chars} characters | ${words} words`;
+    }
+
+    async function runAudit() {
+      const text = editor.value;
+      if (!text.trim()) {
+        currentIssues = [];
+        renderHighlights([]);
+        renderCards([]);
+        updateScore(100);
+        return;
+      }
+
+      document.getElementById('syncStatus').textContent = 'Auditing...';
+      try {
+        const resp = await fetch('/api/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await resp.json();
+        currentIssues = data.all_findings || [];
+        updateScore(data.score ?? 100);
+        renderHighlights(currentIssues);
+        renderCards(currentIssues);
+        document.getElementById('syncStatus').textContent = 'Audit complete';
+      } catch (err) {
+        document.getElementById('syncStatus').textContent = 'Audit error';
+      }
+    }
+
+    function updateScore(score) {
+      document.getElementById('scoreVal').textContent = score;
+      const dot = document.getElementById('scoreDot');
+      dot.className = 'score-dot ' + (score >= 90 ? 'score-emerald' : (score >= 60 ? 'score-amber' : 'score-red'));
+    }
+
+    function renderHighlights(issues) {
+      const text = editor.value;
+      if (!issues || issues.length === 0) {
+        backdrop.innerHTML = escapeHtml(text);
+        return;
+      }
+
+      // Sort ascending by start
+      const sorted = [...issues].sort((a, b) => a.start - b.start);
+      let html = '';
+      let lastIndex = 0;
+
+      sorted.forEach((iss, idx) => {
+        if (iss.start < lastIndex) return; // skip overlaps
+        html += escapeHtml(text.slice(lastIndex, iss.start));
+        const spanText = escapeHtml(text.slice(iss.start, iss.end));
+        html += `<span class="issue-highlight issue-${iss.category}" data-idx="${idx}" onclick="openIssuePopover(${idx}, event)">${spanText}</span>`;
+        lastIndex = iss.end;
+      });
+      html += escapeHtml(text.slice(lastIndex));
+      backdrop.innerHTML = html;
+    }
+
+    function renderCards(issues) {
+      const list = document.getElementById('cardsList');
+      const filtered = currentFilter === 'all' ? issues : issues.filter(i => i.category === currentFilter);
+
+      // Update badge counts
+      document.getElementById('badgeAll').textContent = issues.length;
+      document.getElementById('badgeAmh').textContent = issues.filter(i => i.category === 'anti_amharic').length;
+      document.getElementById('badgePunct').textContent = issues.filter(i => i.category === 'punctuation_ai').length;
+      document.getElementById('badgeHouse').textContent = issues.filter(i => i.category === 'orthography_house_style').length;
+      document.getElementById('badgeSov').textContent = issues.filter(i => i.category === 'grammar_sov').length;
+      document.getElementById('badgeTheo').textContent = issues.filter(i => i.category === 'theological_glossary').length;
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <p><strong>Pristine Text</strong></p>
+            <p style="font-size: 0.78rem; margin-top: 0.35rem;">No ${currentFilter === 'all' ? '' : currentFilter} issues detected.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = filtered.map((iss, idx) => {
+        const catLabels = {
+          grammar_sov: 'Grammar & SOV',
+          punctuation_ai: 'Punctuation & AI',
+          orthography_house_style: 'House Style',
+          anti_amharic: 'Anti-Amharic',
+          theological_glossary: 'Theological Glossary'
+        };
+        const catColors = {
+          grammar_sov: 'var(--cat-sov)',
+          punctuation_ai: 'var(--cat-punct)',
+          orthography_house_style: 'var(--cat-house)',
+          anti_amharic: 'var(--cat-amh)',
+          theological_glossary: 'var(--cat-theo)'
+        };
+
+        const repSection = iss.replacement !== null && iss.replacement !== undefined
+          ? `<div class="card-diff">
+               <span class="diff-old">${escapeHtml(iss.matched)}</span>
+               <span class="diff-arrow">➔</span>
+               <span class="diff-new">${escapeHtml(iss.replacement || '(drop)')}</span>
+             </div>`
+          : `<div class="card-diff"><span class="diff-old">${escapeHtml(iss.matched)}</span> (Manual Review Required)</div>`;
+
+        const applyBtn = iss.replacement !== null && iss.replacement !== undefined
+          ? `<button class="card-btn card-btn-apply" onclick="event.stopPropagation(); applyIssueByIndex(${idx})">Apply</button>`
+          : '';
+
+        return `
+          <div class="issue-card" id="card-${idx}" onclick="focusIssue(${idx})">
+            <div class="card-top">
+              <span class="card-category" style="color: ${catColors[iss.category] || '#fff'}">● ${catLabels[iss.category] || iss.category}</span>
+              <span class="card-severity sev-${iss.severity}">${iss.severity}</span>
+            </div>
+            <div class="card-message">${escapeHtml(iss.message)}</div>
+            ${repSection}
+            <div class="card-actions">
+              <button class="card-btn card-btn-dismiss" onclick="event.stopPropagation(); dismissIssueByIndex(${idx})">Dismiss</button>
+              ${applyBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCategory(cat, el) {
+      currentFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      renderCards(currentIssues);
+    }
+
+    function openIssuePopover(idx, event) {
+      event.stopPropagation();
+      activeIssueIndex = idx;
+      const iss = currentIssues[idx];
+      if (!iss) return;
+
+      document.getElementById('popCat').textContent = iss.category.replace('_', ' ').toUpperCase();
+      document.getElementById('popSev').textContent = iss.severity;
+      document.getElementById('popSev').className = `card-severity sev-${iss.severity}`;
+      document.getElementById('popMsg').textContent = iss.message;
+      document.getElementById('popOld').textContent = iss.matched;
+      document.getElementById('popNew').textContent = iss.replacement !== null ? (iss.replacement || '(drop)') : '(review)';
+
+      const applyBtn = document.getElementById('popApplyBtn');
+      applyBtn.style.display = iss.replacement !== null ? 'inline-block' : 'none';
+
+      const rect = event.target.getBoundingClientRect();
+      popover.style.top = `${Math.min(window.innerHeight - 200, rect.bottom + window.scrollY + 6)}px`;
+      popover.style.left = `${Math.min(window.innerWidth - 340, Math.max(10, rect.left + window.scrollX - 20))}px`;
+      popover.style.display = 'block';
+
+      // Focus card in sidebar
+      focusIssue(idx);
+    }
+
+    function focusIssue(idx) {
+      document.querySelectorAll('.issue-card').forEach(c => c.classList.remove('focused'));
+      const card = document.getElementById(`card-${idx}`);
+      if (card) {
+        card.classList.add('focused');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      const iss = currentIssues[idx];
+      if (iss) {
+        editor.focus();
+        editor.setSelectionRange(iss.start, iss.end);
+      }
+    }
+
+    function applyCurrentIssue() {
+      if (activeIssueIndex !== null) {
+        applyIssueByIndex(activeIssueIndex);
+        popover.style.display = 'none';
+      }
+    }
+
+    function applyIssueByIndex(idx) {
+      const iss = currentIssues[idx];
+      if (!iss || iss.replacement === null) return;
+      const text = editor.value;
+      const replacement = iss.replacement;
+      const newText = text.slice(0, iss.start) + replacement + text.slice(iss.end);
+      editor.value = newText;
+      popover.style.display = 'none';
+      handleInput();
+      showToast(`Applied fix for: ${iss.matched}`);
+    }
+
+    function dismissCurrentIssue() {
+      if (activeIssueIndex !== null) {
+        dismissIssueByIndex(activeIssueIndex);
+        popover.style.display = 'none';
+      }
+    }
+
+    function dismissIssueByIndex(idx) {
+      currentIssues.splice(idx, 1);
+      renderHighlights(currentIssues);
+      renderCards(currentIssues);
+    }
+
+    async function fixAllDeterministic() {
+      const text = editor.value;
+      if (!text.trim()) return;
+
+      try {
+        const resp = await fetch('/api/fix', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await resp.json();
+        editor.value = data.fixed_text;
+        handleInput();
+        showToast(`⚡ Fixed ${data.fixes_count} deterministic issue(s)!`);
+      } catch (err) {
+        showToast('Error applying deterministic fixes.');
+      }
+    }
+
+    async function runAiCheck() {
+      const text = editor.value;
+      if (!text.trim()) return;
+
+      const aiBtn = document.getElementById('aiBtn');
+      const originalText = aiBtn.innerHTML;
+      aiBtn.innerHTML = '⏳ Analyzing...';
+      aiBtn.disabled = true;
+
+      try {
+        const resp = await fetch('/api/ai-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await resp.json();
+        aiBtn.innerHTML = originalText;
+        aiBtn.disabled = false;
+
+        if (!data.available) {
+          showToast(`AI Check: ${data.error || 'Unavailable'}`);
+          return;
+        }
+
+        // Merge AI issues with existing deterministic issues
+        const aiIssues = data.issues || [];
+        const combined = [...currentIssues, ...aiIssues];
+        currentIssues = combined;
+        updateScore(data.score ?? 95);
+        renderHighlights(currentIssues);
+        renderCards(currentIssues);
+        showToast(`✨ AI Grammar Check complete! ${data.summary || ''}`);
+      } catch (err) {
+        aiBtn.innerHTML = originalText;
+        aiBtn.disabled = false;
+        showToast('AI Grammar Check request failed.');
+      }
+    }
+
+    function loadPreset(key) {
+      if (!key || !PRESETS[key]) return;
+      const p = PRESETS[key];
+      editor.value = p.ti;
+      document.getElementById('sourceInput').value = p.en;
+      handleInput();
+    }
+
+    function toggleDualView() {
+      const pane = document.getElementById('sourcePane');
+      pane.classList.toggle('active');
+    }
+
+    function copyText() {
+      navigator.clipboard.writeText(editor.value);
+      showToast('Copied Tigrinya text to clipboard!');
+    }
+
+    function clearText() {
+      editor.value = '';
+      document.getElementById('sourceInput').value = '';
+      handleInput();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Close popover when clicking elsewhere
+    document.addEventListener('click', (e) => {
+      if (!popover.contains(e.target) && !e.target.classList.contains('issue-highlight')) {
+        popover.style.display = 'none';
+      }
+    });
+
+    // Initial run on page load
+    window.onload = () => {
+      loadPreset('dirty_ai');
+    };
+  </script>
+</body>
+</html>
+"""
+
+
+class StudioRequestHandler(BaseHTTPRequestHandler):
+    """Zero-dependency HTTP handler for Tigrinya Web Studio."""
+
+    def _send_json(self, status_code: int, data: dict):
+        body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+        self.send_response(status_code)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
+    def do_GET(self):
+        if self.path == "/" or self.path.startswith("/?"):
+            body = HTML_TEMPLATE.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif self.path == "/api/health":
+            self._send_json(200, {"status": "ok", "app": "tigrinya-web-studio", "version": "2.0.0"})
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_POST(self):
+        content_length = int(self.headers.get("Content-Length", 0))
+        raw_body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+        try:
+            req_data = json.loads(raw_body)
+        except Exception:
+            req_data = {}
+
+        if not isinstance(req_data, dict):
+            req_data = {}
+
+        text = req_data.get("text", "")
+        if not isinstance(text, str):
+            text = str(text) if text is not None else ""
+
+        if self.path == "/api/check":
+            audit_result = audit_tigrinya(text, strict=True)
+            self._send_json(200, audit_result)
+        elif self.path == "/api/fix":
+            fixed_text, fixes = fix_deterministic(text)
+            self._send_json(200, {
+                "original_text": text,
+                "fixed_text": fixed_text,
+                "fixes_count": len(fixes),
+                "fixes": fixes,
+            })
+        elif self.path == "/api/ai-check":
+            ai_result = run_gemini_grammar_check(text)
+            self._send_json(200, ai_result)
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+
+def run_server(port: int = 8765, open_browser: bool = False):
+    """Launch the Web Studio HTTP server with automatic port conflict handling."""
+    max_attempts = 10
+    server = None
+    actual_port = port
+
+    for p in range(port, port + max_attempts):
+        try:
+            server = HTTPServer(("127.0.0.1", p), StudioRequestHandler)
+            actual_port = p
+            break
+        except OSError:
+            continue
+
+    if not server:
+        print(f"Error: Could not bind to any port in range {port} - {port + max_attempts}")
+        sys.exit(1)
+
+    url = f"http://localhost:{actual_port}"
+    print(f"\n=======================================================")
+    print(f"  Tigrinya Studio (Grammarly-Style Web & CLI)")
+    print(f"  Local Server Running: {url}")
+    print(f"  Press Ctrl+C to stop.")
+    print(f"=======================================================\n")
+
+    if open_browser:
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopping Tigrinya Studio server...")
+        server.server_close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Tigrinya Grammarly-Style Web Studio & CLI Server")
+    parser.add_argument("--port", type=int, default=8765, help="Port to listen on (default: 8765)")
+    parser.add_argument("--open", action="store_true", help="Automatically open browser")
+    args = parser.parse_args()
+
+    run_server(port=args.port, open_browser=args.open)
+
+
+if __name__ == "__main__":
+    main()
