@@ -1,6 +1,6 @@
 # Tigrinya Verb Skeleton Reference
 
-Consult this reference whenever constructing or checking a finite Tigrinya verb phrase.
+Consult this reference whenever constructing or checking a finite Tigrinya verb phrase, compound tense, or aspectual construction.
 
 ---
 
@@ -15,7 +15,7 @@ Consult this reference whenever constructing or checking a finite Tigrinya verb 
 | **3rd Fem. (ንሳ)** | ፈለጠት (*fäläṭät*) | ትፈልጥ (*təfälləṭ*) | ፈሊጣ (*fäliṭa*) | ትፍለጥ (*təfläṭ*) |
 | **1st Plur. (ንሕና)** | ፈለጥና (*fäläṭna*) | ንፈልጥ (*nəfälləṭ*) | ፈሊጥና (*fäliṭna*) | ንፍለጥ (*nəfläṭ*) |
 | **2nd Plur. M (ንስኻትኩም)** | ፈለጥኩም (*fäläṭkum*) | ትፈልጡ (*təfälləṭu*) | ፈሊጥኩም (*fäliṭkum*) | ፍለጡ (*fəläṭu*) |
-| **2nd Plur. F (ንስኻትክን)** | ፈለጥክን (*fäläṭkən*) | ትፈልጣ (*təfälləṭa*) | ፈሊጥክን (*fäliṭkən*) | ፍለጣ (*fəläṭa*) |
+| **2nd Plur. F (ንስኻትክን)** | ፈለጥክን (*fäläṭkən*) | ትፈልጣ (*təfälləṭa*) | ፈሊጥክን (*fäliṭkən*) | ፍለጣ (*fäliṭa*) |
 | **3rd Plur. M (ንሳቶም)** | ፈለጡ (*fäläṭu*) | ይፈልጡ (*yəfälləṭu*) | ፈሊጦም (*fäliṭom*) | ይፍለጡ (*yəfläṭu*) |
 | **3rd Plur. F (ንሳተን)** | ፈለጣ (*fäläṭa*) | ይፈልጣ (*yəfälləṭa*) | ፈሊጠን (*fäliṭän*) | ይፍለጣ (*yəfläṭa*) |
 
@@ -73,6 +73,25 @@ Tigrinya has no standalone verb for "to have". It uses **ኣሎ** (*alo* = there
 
 ---
 
-## 4. Laryngeal & Weak Root Notice
-Verbs with root consonants containing laryngeals (**ሀ, ሐ, ዐ, አ**) or semivowels (**ወ, የ**) deviate from regular Type A vowel patterns (e.g. *በልዐ* "ate", *ሰመዐ* "heard", *ረኣየ* "saw").
-> **Strict Directive:** Do not force the regular *fäläṭä* vowel pattern onto weak or laryngeal verbs. When uncertain of an irregular root's stem formation, verify it against Kane's dictionary.
+## 4. Compound Tenses & Aspectual Mappings
+
+English tense-aspect distinctions map directly to these Tigrinya auxiliary constructions:
+
+| English Tense / Aspect | English Example | Tigrinya Construction | Tigrinya Example |
+| :--- | :--- | :--- | :--- |
+| **Simple Present / Habitual** | He writes every day | Imperfective + Copula **እዩ** | መዓልታዊ **ይጽሕፍ እዩ** |
+| **Present Continuous** | He is writing now | Imperfective + Auxiliary **ኣሎ** | ሕጂ **ይጽሕፍ ኣሎ** |
+| **Simple Past (Completed)** | He wrote the letter | Main-clause Gerundive | ነታ ደብዳበ **ጽሒፉዋ** |
+| **Past Continuous** | He was writing | Imperfective + Auxiliary **ነይሩ** | **ይጽሕፍ ነይሩ** |
+| **Habitual Past ("Used to")** | He used to write | Imperfective + Auxiliary **ነበረ / ነይሩ** | **ይጽሕፍ ነበረ** |
+| **Present Perfect** | He has written | Gerundive + Auxiliary **ኣሎ** | **ጽሒፉ ኣሎ** |
+| **Past Perfect** | He had written | Gerundive + Auxiliary **ነይሩ** | **ጽሒፉ ነይሩ** |
+| **Simple Future** | He will write | Prefix **ክ-** + Imperfective + **እዩ** | **ክጽሕፍ እዩ** |
+| **Prospective / Inchoative** | He is about to write | Prefix **ክ-** + Imperfective + **ቀሪቡ / ደልዩ** | **ክጽሕፍ ቀሪቡ ኣሎ** |
+| **Conditional Past** | If he had come, I would have... | ም-…-ነበረ construction | እንተ ዝመጽእ፣ ምኸድኩ ነይረ |
+
+---
+
+## 5. Irregular & Laryngeal Verbs Notice
+Verbs with root consonants containing laryngeals (**ሀ, ሐ, ዐ, አ**) or semivowels (**ወ, የ**) deviate from regular Type A vowel patterns (e.g. *መጸ, ከደ, ረኣየ, በለ, ሃበ, ወሰደ, ገበረ, በልዐ*).
+> **Detailed Guide:** Consult [`references/irregular-verbs.md`](file:///references/irregular-verbs.md) for full conjugation paradigms across all 8 major irregular roots and derived stems (passive, causative, reciprocal).

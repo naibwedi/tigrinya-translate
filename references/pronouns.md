@@ -1,6 +1,6 @@
 # Tigrinya Pronouns & Pronominal Affixes Reference
 
-Consult this reference whenever handling pronouns, possession, vocatives, or verbal object markers.
+Consult this reference whenever handling pronouns, possession, vocatives, verbal object markers, demonstratives, or noun plurals.
 
 ---
 
@@ -84,3 +84,44 @@ Incorporate dative/benefactive ("to/for") or instrumental/locative ("with/by/in"
 
 ### Instrumental / Locative Marker: -በ- (*-bä-*)
 * ተጠቐመ**ሉ** (*täṭäqqämällu* = he used it / benefited by it).
+
+---
+
+## 6. Demonstrative Pronouns & Articles (ኣመልከቲ ቃላት)
+
+Tigrinya demonstratives agree with the noun in gender and number. They precede the noun or fuse with the accusative marker **ን-**:
+
+| Distance | Masculine Singular | Feminine Singular | Masculine Plural | Feminine Plural |
+| :--- | :--- | :--- | :--- | :--- |
+| **Proximal ("This / These")** | **እዚ** (*əzi*) | **እዚኣ** (*əzi'a*) | **እዚኦም** (*əzi'om*) | **እዚአን** (*əzi'än*) |
+| **Accusative Proximal ("This [obj]")** | **ነዚ** (*näzi*) | **ነዚኣ** (*näzi'a*) | **ነዚኦም** (*näzi'om*) | **ነዚአን** (*näzi'än*) |
+| **Distal ("That / Those")** | **እቲ** (*əti*) | **እታ** (*əta*) | **እቶም** (*ətom*) | **እተን** (*ətän*) |
+| **Accusative Distal ("That [obj]")** | **ነቲ** (*näti*) | **ነታ** (*näta*) | **ነቶም** (*nätom*) | **ነተን** (*nätän*) |
+
+---
+
+## 7. Noun Plural Formation Patterns (ስርዓተ-ብዙሕ)
+
+Tigrinya forms plurals through external suffixation, internal vowel change (broken plurals), or suppletion:
+
+### A. Regular Suffixed Plurals
+1. **General Nouns: `-ታት` (*-tat*)**
+   * ገዛ (*house*) → **ገዛታት** (*houses*)
+   * ዓዲ (*village/town*) → **ዓድታት** (*villages*)
+   * ሕቶ (*question*) → **ሕቶታት** (*questions*)
+2. **Occupational & Agent Nouns: `-ቲ` (*-ti*)**
+   * ሓራሲ (*farmer*) → **ሓረስቶት / ሓረስቲ** (*farmers*)
+   * ሰራሕተኛ (*worker*) → **ሰራሕተኛታት** (*workers*)
+
+### B. High-Frequency Broken & Irregular Plurals
+| Singular | Plural | Meaning |
+| :--- | :--- | :--- |
+| **ወዲ** (*wäddi*) | **ኣወዳት** (*awädat*) | boy / son → boys |
+| **ጓል** (*gwal*) | **ኣዋልድ** (*awaləd*) | girl / daughter → girls |
+| **ሰብ** (*säb*) | **ሰባት** (*säbat*) | person → people |
+| **ሰብኣይ** (*säb'ay*) | **ሰብኡት** (*säb'ut*) | man / husband → men |
+| **ሰበይቲ** (*säbäyti*) | **ኣንስቲ** (*anəsti*) | woman / wife → women |
+| **መጽሓፍ** (*mätṣḥaf*) | **መጻሕፍቲ** (*mätṣaḥəfti*) | book → books |
+| **ገዛ** (*gäza*) | **ኣባይቲ** (*abayti*) | house → houses (archaic/high-register beside *ገዛታት*) |
+| **ፈረስ** (*färäs*) | **ኣፍራስ** (*afras*) | horse → horses |
+| **ነጋዳይ** (*nägaday*) | **ነጋዶ** (*nägado*) | merchant → merchants |

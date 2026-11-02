@@ -1,6 +1,8 @@
 ---
 name: english-tigrinya-translator
 description: Enforceable English ↔ Tigrinya translator skill. Resolves grammatical choices (gender, number, register, dialect), enforces strict SOV syntax and gerundive past, consults domain glossaries, filters Amharic and Latin residue leakage, validates double -ንን negative verb morphology, and aligns database Scripture quotations.
+when-to-use: When translating text between English and Tigrinya, reviewing Geʽez script grammar and spelling, localizing UI or software strings, evaluating theological and patristic commentary, or auditing Tigrinya text for linguistic naturalness and anti-Amharic compliance.
+argument-hint: <text-or-document-to-translate> [--register polite|familiar|theological]
 ---
 
 # English ↔ Tigrinya Translator Procedure
@@ -13,7 +15,7 @@ When invoked, execute the following five-step decision procedure in order. Every
 Identify the requested task:
 1. **English → Tigrinya translation** (proceed to Step 2).
 2. **Tigrinya → English translation** (proceed to Step 5C).
-3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against [`references/verb-skeleton.md`](file:///references/verb-skeleton.md), [`references/anti-amharic.md`](file:///references/anti-amharic.md), and [`scripts/audit_translation.py`](file:///scripts/audit_translation.py)).
+3. **Grammar & naturalness check** of Tigrinya text supplied by the user (audit against [`references/verb-skeleton.md`](file:///references/verb-skeleton.md), [`references/irregular-verbs.md`](file:///references/irregular-verbs.md), [`references/anti-amharic.md`](file:///references/anti-amharic.md), and [`scripts/audit_translation.py`](file:///scripts/audit_translation.py)).
 
 ---
 
@@ -33,16 +35,20 @@ Open and consult [`references/decisions.md`](file:///references/decisions.md) be
 Apply the morphological and syntactic rules documented in the references:
 1. **Clause Order:** Strict **Subject – Object – Verb (SOV)**. Relative clauses (prefixed with *ዝ-* or *ዘይ-*) precede head nouns.
 2. **Prepositions:** Prepositions (*ኣብ, ን, ብ, ምስ, ካብ, ናብ, ናይ*) precede the noun.
-3. **Pronouns & Affixes:** Open [`references/pronouns.md`](file:///references/pronouns.md). Omit independent subject pronouns (*ኣነ, ንሱ, ንሳ*) unless emphasized (pro-drop). Definite direct objects take prefix **ን-** fused with the article (**ነቲ** masc., **ነታ** fem., **ነቶም** pl. m., **ነተን** pl. f.).
-4. **Verb Construction:** Open [`references/verb-skeleton.md`](file:///references/verb-skeleton.md).
+3. **Pronouns, Demonstratives & Plurals:** Open [`references/pronouns.md`](file:///references/pronouns.md). Omit independent subject pronouns (*ኣነ, ንሱ, ንሳ*) unless emphasized (pro-drop). Definite direct objects take prefix **ን-** fused with the article (**ነቲ** masc., **ነታ** fem., **ነቶም** pl. m., **ነተን** pl. f.).
+4. **Verb Construction & Aspect:** Open [`references/verb-skeleton.md`](file:///references/verb-skeleton.md) and [`references/irregular-verbs.md`](file:///references/irregular-verbs.md).
    - Use the **gerundive** (*ወሳኺ ግሲ*) for completed past actions in main clauses (e.g. *ነቲ መግቢ በሊዐ* "I ate the food"; *መጺኡ* "he arrived").
    - Chain sequential actions with gerunds, not English-style conjunctions (*-ን* or *እሞ*).
+   - Distinguish fine aspectual mappings (Present Continuous *ይጽሕፍ ኣሎ*, Past Continuous *ይጽሕፍ ነይሩ*, Present Perfect *ጽሒፉ ኣሎ*, Past Perfect *ጽሒፉ ነይሩ*).
+   - For irregular verbs (*መጸ, ከደ, ረኣየ, በለ, ሃበ, ወሰደ, ገበረ, በልዐ*), strictly follow the paradigms in [`references/irregular-verbs.md`](file:///references/irregular-verbs.md).
    - Main-clause negation takes **ኣይ-…-ን**; subordinate negation takes **ዘይ-** (drop *-ን*).
    - Never blend **ደው ኣይብልን** ("does not stop") and **ኣይውሰንን** ("is not limited/bounded") into `*ኣይድወንን`.
    - Yes/no questions take the particle **ዶ**.
    - Express "have" and "must" using **ኣሎ** plus pronominal suffixes (*ኣሎኒ*, *ክኸይድ ኣሎኒ*).
-   - Do not force regular *fäläṭä* vowel patterns onto laryngeal or weak roots.
-5. **Benchmarks:** Open [`references/examples.md`](file:///references/examples.md) when handling comparable sentence structures.
+5. **Structured Data & Markup Guard:** When translating JSON, YAML, HTML, or Markdown:
+   - Translate human-facing strings and message values only.
+   - Strictly preserve JSON keys, code identifiers, URLs, HTML tags, and markdown formatting syntax.
+6. **Benchmarks:** Open [`references/examples.md`](file:///references/examples.md) when handling comparable sentence structures.
 
 ---
 
@@ -88,8 +94,9 @@ Whenever new Tigrinya orthographic rules, patristic terms, morphological pattern
 
 ## Reference Library
 - Decisions & Registers: [`references/decisions.md`](file:///references/decisions.md)
-- Pronouns & Affixes: [`references/pronouns.md`](file:///references/pronouns.md)
-- Verb System & Paradigms: [`references/verb-skeleton.md`](file:///references/verb-skeleton.md)
+- Pronouns, Demonstratives & Plurals: [`references/pronouns.md`](file:///references/pronouns.md)
+- Verb System & Compound Tenses: [`references/verb-skeleton.md`](file:///references/verb-skeleton.md)
+- Irregular & Laryngeal Verbs: [`references/irregular-verbs.md`](file:///references/irregular-verbs.md)
 - Orthography, Punctuation & Transliteration: [`references/orthography.md`](file:///references/orthography.md)
 - Anti-Amharic Rejection Filter: [`references/anti-amharic.md`](file:///references/anti-amharic.md)
 - Benchmark Translation Examples: [`references/examples.md`](file:///references/examples.md)

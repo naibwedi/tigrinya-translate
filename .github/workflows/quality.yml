@@ -1,0 +1,21 @@
+name: Translation quality tooling
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate benchmark and evaluation regressions
+        run: |
+          python scripts/evaluate_translation.py --split all validate
+          python -m unittest discover -s scripts -p test_evaluation.py -v
+      - name: Existing rule regressions
+        run: python scripts/audit_translation.py --test

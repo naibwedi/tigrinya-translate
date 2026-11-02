@@ -39,6 +39,7 @@ english-tigrinya-translator/
 │   ├── decisions.md                         # Dialect defaults, register rules, and English "you" resolution
 │   ├── pronouns.md                          # Independent pronouns, polite forms, vocatives, and affix tables
 │   ├── verb-skeleton.md                     # The 4 stems (√ፈለጠ model), gerundive-as-past, copula, and auxiliaries
+│   ├── irregular-verbs.md                   # High-frequency weak/laryngeal verbs (መጸ, ከደ, ረኣየ, በለ, ሃበ)
 │   ├── orthography.md                       # Punctuation, fidel disambiguation, labiovelars, and Latin transliteration
 │   ├── anti-amharic.md                      # Rejection list for Amharic words, copulas, and suffixes
 │   ├── examples.md                          # 15-item evaluation benchmark set with full linguistic rationales
@@ -117,11 +118,23 @@ python scripts/sync_skill.py
 
 ---
 
+## Measure Translation Quality
+
+The [evaluation workflow](evaluation/README.md) adds 150 starter scenarios across 14 categories for general Eritrean English ↔ Tigrinya translation, with optional church spelling. It supports reproducible model/prompt runs, exact identifier preservation, named human reviews, per-category reports, and paired regression comparisons. Meaning, grammar, naturalness, register, terminology, and style are rated separately.
+
+```powershell
+python scripts/evaluate_translation.py validate
+python scripts/evaluate_translation.py prepare --out evaluation/runs/baseline --label baseline --model your-model --prompt-version v1
+```
+
+The runner is offline and provider-neutral: fill generated output records from your translation model, then create the review CSV and score the run. It does not make API calls. Starter scenarios await native-speaker validation; unreviewed outputs receive no invented accuracy score. The existing 36 audit tests measure rule behavior, not translation accuracy.
+
 ## Reference Guides
 
 - [Decisions & Register](file:///references/decisions.md)
 - [Pronouns & Affixes](file:///references/pronouns.md)
 - [Verb System & Paradigms](file:///references/verb-skeleton.md)
+- [Irregular & Laryngeal Verbs](file:///references/irregular-verbs.md)
 - [Orthography, Punctuation & Transliteration](file:///references/orthography.md)
 - [Anti-Amharic Rejection Filter](file:///references/anti-amharic.md)
 - [Benchmark Translation Examples](file:///references/examples.md)

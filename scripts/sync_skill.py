@@ -33,6 +33,8 @@ SYNC_FILES = [
     "scripts/studio.py",
     "scripts/sync_skill.py",
     "scripts/test_studio.py",
+    "scripts/evaluate_translation.py",
+    "scripts/test_evaluation.py",
     "references/anti-amharic.md",
     "references/bibliography-and-sources.md",
     "references/decisions.md",
@@ -42,6 +44,7 @@ SYNC_FILES = [
     "references/pronouns.md",
     "references/theological-glossary.md",
     "references/verb-skeleton.md",
+    "references/irregular-verbs.md",
 ]
 
 
